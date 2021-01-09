@@ -1,0 +1,22 @@
+{
+  "name": "frontpage.today",
+  "version": "1.0.0",
+  "description": "Daily news aggregator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielireson/frontpage.today.git"
+  },
+  "author": "Daniel Iresn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danielireson/frontpage.today/issues"
+  },
+  "homepage": "https://github.com/danielireson/frontpage.today#readme",
+  "dependencies": {
+    "handlebars": "^4.7.6"
+  }
+}
