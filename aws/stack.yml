@@ -1,0 +1,140 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  DomainName:
+    Type: String
+  CertificateARN:
+    Type: String
+  DeploymentBucket:
+    Type: String
+
+Resources:
+  DomainBucketRootPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref DomainName
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:s3:::${DomainName}/*
+            Principal: "*"
+  DomainBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref DomainName
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+  DomainBucketDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginProtocolPolicy: http-only
+            DomainName: !Sub ${DomainName}.s3-website-${AWS::Region}.amazonaws.com
+            Id: origin
+        DefaultCacheBehavior:
+          ForwardedValues:
+            QueryString: true
+          TargetOriginId: origin
+          ViewerProtocolPolicy: redirect-to-https
+          LambdaFunctionAssociations:
+            - EventType: "origin-request"
+              LambdaFunctionARN: !Ref VersionedLambdaFunction
+        Aliases:
+          - !Sub ${DomainName}
+        ViewerCertificate:
+          AcmCertificateArn: !Ref CertificateARN
+          SslSupportMethod: sni-only
+        Enabled: true
+  DomainBucketDistributionRecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Ref DomainName
+      Name: !Sub ${DomainName}.
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt DomainBucketDistribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+  DomainBucketWWW:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub www.${DomainName}
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Sub ${DomainName}
+          Protocol: https
+  DomainBucketWWWDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginProtocolPolicy: http-only
+            DomainName: !Sub www.${DomainName}.s3-website-${AWS::Region}.amazonaws.com
+            Id: origin
+        DefaultCacheBehavior:
+          ForwardedValues:
+            QueryString: true
+          TargetOriginId: origin
+          ViewerProtocolPolicy: redirect-to-https
+        Aliases:
+          - !Sub www.${DomainName}
+        ViewerCertificate:
+          AcmCertificateArn: !Ref CertificateARN
+          SslSupportMethod: sni-only
+        Enabled: true
+  DomainBucketDistributionWWWRecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Sub ${HostedZone}.
+      Name: !Sub www.${DomainName}.
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt DomainBucketWWWDistribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - edgelambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: !Ref DeploymentBucket
+      Handler: index.handler
+      MemorySize: 128
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: nodejs12.x
+      Timeout: 5
+  VersionedLambdaFunction:
+    Type: AWS::Lambda::Version
+    Properties:
+      FunctionName: !Ref LambdaFunction
+
+Outputs:
+  DistributionURL:
+    Description: The cloudfront distribution URL
+    Value: !GetAtt DomainBucketDistribution.DomainName
+  ApplicationURL:
+    Description: The public application URL
+    Value: !Ref DomainName
