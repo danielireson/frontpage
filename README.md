@@ -8,14 +8,19 @@ aws s3api create-bucket \
   --acl private
 
 # create parameters config file
-cp aws/parameters/exmaple.json aws/parameters/prod.json
+cp config/exmaple.json config/prod.json
+
+# package stack
+aws cloudformation package \
+  --template stack.yml \
+  --output-template-file deploy-stack.yml \
+  --s3-bucket frontpage-today-deployments
 
 # create stack
-aws cloudformation create-stack \
+aws --region us-east-1 cloudformation create-stack \
   --stack-name frontpage-today-prod \
-  --stack-region us-east-1 \
-  --template-body file://aws/stack.yml \
-  --parameters file://aws/parameters/prod.json \
+  --template-body file://deploy-stack.yml \
+  --parameters file://config/prod.json \
   --timeout-in-minutes 10
 
 ```

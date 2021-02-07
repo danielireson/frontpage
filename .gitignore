@@ -8,5 +8,6 @@ node_modules/
 .npm
 
 # AWS
-aws/parameters/*
-!aws/parameters/example.json
+config/*
+!config/example.json
+deploy-stack.yml

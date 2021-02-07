@@ -47,7 +47,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: "origin-request"
-              LambdaFunctionARN: !Ref VersionedLambdaFunction
+              LambdaFunctionARN: !Ref VersionedLambdaRenderFunction
         Aliases:
           - !Sub ${DomainName}
         ViewerCertificate:
@@ -57,7 +57,7 @@ Resources:
   DomainBucketDistributionRecordSet:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: !Ref DomainName
+      HostedZoneName: !Sub ${DomainName}.
       Name: !Sub ${DomainName}.
       Type: A
       AliasTarget:
@@ -96,7 +96,7 @@ Resources:
   DomainBucketDistributionWWWRecordSet:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: !Sub ${HostedZone}.
+      HostedZoneName: !Sub ${DomainName}.
       Name: !Sub www.${DomainName}.
       Type: A
       AliasTarget:
@@ -116,20 +116,32 @@ Resources:
             Action: sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-  LambdaFunction:
+  LambdaBuildFunction:
     Type: AWS::Lambda::Function
     Properties:
-      Code:
-        S3Bucket: !Ref DeploymentBucket
+      Code: functions/build
       Handler: index.handler
       MemorySize: 128
       Role: !GetAtt LambdaRole.Arn
       Runtime: nodejs12.x
       Timeout: 5
-  VersionedLambdaFunction:
+  VersionedLambdaBuildFunction:
     Type: AWS::Lambda::Version
     Properties:
-      FunctionName: !Ref LambdaFunction
+      FunctionName: !Ref LambdaBuildFunction
+  LambdaRenderFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code: functions/render
+      Handler: index.handler
+      MemorySize: 128
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: nodejs12.x
+      Timeout: 5
+  VersionedLambdaRenderFunction:
+    Type: AWS::Lambda::Version
+    Properties:
+      FunctionName: !Ref LambdaRenderFunction
 
 Outputs:
   DistributionURL:
