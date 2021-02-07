@@ -15,8 +15,5 @@
   "bugs": {
     "url": "https://github.com/danielireson/frontpage.today/issues"
   },
-  "homepage": "https://github.com/danielireson/frontpage.today#readme",
-  "dependencies": {
-    "handlebars": "^4.7.6"
-  }
+  "homepage": "https://github.com/danielireson/frontpage.today#readme"
 }
