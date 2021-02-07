@@ -1,4 +1,5 @@
 const { expect } = require("chai");
+const { spy } = require("sinon");
 const { handler } = require("../../../functions/build");
 
 describe("build", function () {
@@ -6,12 +7,12 @@ describe("build", function () {
     // given
     const event = {};
     const context = {};
-    const callback = () => {};
+    const callback = spy();
 
     // when
     handler(event, context, callback);
 
     // then
-    expect(true).to.be.true;
+    expect(callback.calledOnce).to.be.true;
   });
 });
