@@ -21,6 +21,7 @@ aws --region us-east-1 cloudformation create-stack \
   --stack-name frontpage-today-prod \
   --template-body file://deploy-stack.yml \
   --parameters file://config/prod.json \
+  --capabilities CAPABILITY_IAM \
   --timeout-in-minutes 10
 
 ```
