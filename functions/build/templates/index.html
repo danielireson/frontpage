@@ -46,6 +46,15 @@
       list-style: none;
     }
 
+    a {
+      color: rgb(0, 81, 255);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
     header {
       display: flex;
       flex-direction: column;
@@ -60,12 +69,12 @@
       line-height: 1;
     }
 
-    header .header-timestamp {
+    .header-source {
       display: none;
     }
 
     @media (min-width: 1024px) {
-      header .header-timestamp {
+      header .header-source {
         display: block;
         position: absolute;
         top: 1rem;
@@ -88,13 +97,7 @@
     }
 
     main .main-news-link {
-      color: rgb(0, 81, 255);
-      text-decoration: none;
       word-break: break-word;
-    }
-
-    main .main-news-link:hover {
-      text-decoration: underline;
     }
 
     main .main-news-link:visited {
@@ -125,7 +128,13 @@
       <header>
         <h1 class="header-title">Today's frontpage</h1>
         <span class="header-edition">United States edition</span>
-        <span class="header-timestamp">Last updated 22 minutes ago</span>
+        <a
+          href="https://github.com/danielireson/frontpage.today"
+          target="_blank"
+          rel="nofollow noopener"
+          class="header-source"
+          >View source code</a
+        >
       </header>
       <main>
         <ul class="main-news-items">
