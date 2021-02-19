@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 const { spy } = require("sinon");
-const { handler } = require("../../../functions/render");
+const { handler } = require("../functions/render");
 
 describe("render", function () {
   it("example test", function () {
