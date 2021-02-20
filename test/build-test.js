@@ -80,7 +80,7 @@ describe("build", function () {
     );
 
     expect(createDistFileArgs[1]).to.include(
-      '<a href="http://example.com/a" class="main-news-link">'
+      `<a href="http://example.com/a" class="main-news-link" target="_blank" rel="noopener noreferrer">`
     );
 
     expect(syncDistFiles.calledOnce).to.be.true;
