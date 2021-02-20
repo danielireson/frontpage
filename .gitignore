@@ -10,4 +10,4 @@ node_modules/
 # AWS
 config/*
 !config/example.json
-deploy-stack.yml
+deploy-template.yml

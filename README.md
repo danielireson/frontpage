@@ -12,14 +12,14 @@ cp config/exmaple.json config/prod.json
 
 # package stack
 aws cloudformation package \
-  --template stack.yml \
-  --output-template-file deploy-stack.yml \
+  --template template.yml \
+  --output-template-file deploy-template.yml \
   --s3-bucket frontpage-today-deployments
 
 # create stack
 aws --region us-east-1 cloudformation create-stack \
   --stack-name frontpage-today-prod \
-  --template-body file://deploy-stack.yml \
+  --template-body file://deploy-template.yml \
   --parameters file://config/prod.json \
   --capabilities CAPABILITY_IAM \
   --timeout-in-minutes 10
