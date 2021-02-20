@@ -3,11 +3,14 @@
 const path = require("path");
 const fs = require("fs");
 const handlebars = require("handlebars");
+const { minify } = require("html-minifier");
 
 module.exports.buildTemplate = (templateName, data) => {
   const template = fs
     .readFileSync(path.resolve(__dirname, `../templates/${templateName}.hbs`))
     .toString("utf8");
 
-  return handlebars.compile(template)(data);
+  const compiledTemplate = handlebars.compile(template)(data);
+
+  return minify(compiledTemplate, { collapseWhitespace: true });
 };
