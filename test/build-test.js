@@ -119,5 +119,40 @@ describe("build", function () {
       "Expected editions to be defined"
     );
   });
+
+  it("should handle fetch errors", async function () {
+    // given
+    const event = {};
+    const context = {};
+    const callback = sinon.spy();
+
+    requireFiles.callsFake(() => {
+      return [
+        {
+          key: "example",
+          name: "Example",
+          feeds: ["https://example.com/feed"],
+        },
+      ];
+    });
+
+    fetchLatest.throws(() => {
+      throw new Error("Unable to fetch latest posts");
+    });
+
+    // when
+    await handler(event, context, callback);
+
+    // then
+    expect(callback.calledOnce).to.be.true;
+
+    const callbackArgs = callback.firstCall.args;
+
+    expect(callbackArgs[1], "response").to.exist;
+    expect(callbackArgs[1], "response").to.deep.equal({
+      errors: ["https://example.com/feed: Unable to fetch latest posts"],
+    });
+  });
+
   });
 });
