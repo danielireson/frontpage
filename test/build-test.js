@@ -3,8 +3,6 @@ const sinon = require("sinon");
 const { handler } = require("../functions/build");
 const fs = require("../functions/build/services/fs");
 const rss = require("../functions/build/services/rss");
-const template = require("../functions/build/services/template");
-const post = require("../functions/build/services/post");
 const s3 = require("../functions/build/services/s3");
 
 describe("build", function () {
@@ -12,7 +10,7 @@ describe("build", function () {
     sinon.restore();
   });
 
-  it("should build editions", function () {
+  it("should build editions", async function () {
     // given
     const event = {};
     const context = {};
@@ -23,31 +21,24 @@ describe("build", function () {
     const fetchLatest = sinon
       .stub(rss, "fetchLatest")
       .callsFake(async (feedURL) => {
-        return {
-          title: "Example feed",
-          items: [
-            {
-              title: "Post A",
-              link: "http://example.com/a",
-            },
-            {
-              title: "Post B",
-              link: "http://example.com/b",
-            },
-          ],
-        };
+        return [
+          {
+            title: `Post A for ${feedURL}`,
+            link: "http://example.com/a",
+          },
+          {
+            title: `Post B for ${feedURL}`,
+            link: "http://example.com/b",
+          },
+        ];
       });
 
-    const buildTemplate = sinon.spy(template, "buildTemplate");
+    const createTempFile = sinon.stub(fs, "createTempFile");
 
-    const filterPosts = sinon.spy(post, "filterPosts");
-
-    const createTempFile = sinon.spy(fs, "createTempFile");
-
-    const syncTempFiles = sinon.spy(s3, "syncTempFiles");
+    const syncTempFiles = sinon.stub(s3, "syncTempFiles");
 
     // when
-    handler(event, context, callback);
+    await handler(event, context, callback);
 
     // then
     expect(callback.calledOnce).to.be.true;
@@ -64,13 +55,32 @@ describe("build", function () {
 
     expect(requireFiles.calledOnce).to.be.true;
 
+    expect(requireFiles.firstCall.returnValue).to.deep.include({
+      key: "united-kingdom",
+      name: "United Kingdom",
+      feeds: [
+        "https://example.co.uk/1",
+        "https://example.co.uk/2",
+        "https://example.co.uk/3",
+        "https://example.co.uk/4",
+      ],
+    });
+
     expect(fetchLatest.callCount).to.equal(4);
 
-    expect(buildTemplate.calledOnce).to.be.true;
+    expect(createTempFile.callCount).to.be.equal(1);
 
-    expect(filterPosts.calledOnce).to.be.true;
+    const createTempFileArgs = createTempFile.firstCall.args;
 
-    expect(createTempFile.calledOnce).to.be.true;
+    expect(createTempFileArgs[0]).to.equal("united-kingdom");
+
+    expect(createTempFileArgs[1]).to.include(
+      '<span class="header-edition">United Kingdom</span>'
+    );
+
+    expect(createTempFileArgs[1]).to.include(
+      '<a href="http://example.com/a" class="main-news-link">'
+    );
 
     expect(syncTempFiles.calledOnce).to.be.true;
   });

@@ -1,3 +1,3 @@
 "use strict";
 
-module.exports.syncTempFiles = () => {};
+module.exports.syncTempFiles = (bucketName) => {};

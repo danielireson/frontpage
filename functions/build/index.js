@@ -6,7 +6,7 @@ const post = require("./services/post");
 const template = require("./services/template");
 const s3 = require("./services/s3");
 
-module.exports.handler = (event, context, callback) => {
+module.exports.handler = async (event, context, callback) => {
   let editions;
 
   try {
@@ -24,22 +24,25 @@ module.exports.handler = (event, context, callback) => {
     errors: [],
   };
 
-  editions.forEach((edition) => {
+  for (const edition of editions) {
     const posts = [];
 
-    edition.feeds.forEach((feed) => {
+    for (const feed of edition.feeds) {
       try {
-        posts.push(rss.fetchLatest(feed));
+        const latestPosts = await rss.fetchLatest(feed);
+        posts.push(...latestPosts);
       } catch (error) {
         response.errors.push(`${feed}: ${error.message}`);
       }
+    }
+
+    const html = template.buildTemplate("edition", {
+      name: edition.name,
+      items: post.filterPosts(posts),
     });
 
-    const filteredPosts = post.filterPosts(posts);
-    const html = template.buildTemplate(edition.name, filteredPosts);
-
     fs.createTempFile(edition.key, html);
-  });
+  }
 
   s3.syncTempFiles();
 

@@ -1,4 +1,7 @@
 {
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "handlebars": "^4.7.7",
+    "rss-parser": "^3.11.0"
+  }
 }

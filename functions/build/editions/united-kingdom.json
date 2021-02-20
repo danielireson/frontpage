@@ -1,5 +1,5 @@
 {
-  "id": "united-kingdom",
+  "key": "united-kingdom",
   "name": "United Kingdom",
   "feeds": [
     "https://example.co.uk/1",
