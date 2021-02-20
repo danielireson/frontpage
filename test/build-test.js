@@ -43,15 +43,12 @@ describe("build", function () {
     // then
     expect(callback.calledOnce).to.be.true;
 
-    const expectedError = null;
-    const expectedResponse = {
-      errors: [],
-    };
+    const callbackArgs = callback.firstCall.args;
 
-    expect(callback.firstCall.args).to.deep.equal([
-      expectedError,
-      expectedResponse,
-    ]);
+    expect(callbackArgs[1]).to.exist;
+    expect(callbackArgs[1]).to.deep.equal({
+      errors: [],
+    });
 
     expect(requireFiles.calledOnce).to.be.true;
 
@@ -99,9 +96,11 @@ describe("build", function () {
 
     // then
     expect(callback.calledOnce).to.be.true;
-    expect(callback.firstCall.firstArg).to.exist;
-    expect(callback.firstCall.firstArg.message).to.equal(
-      "Expected editions to be defined"
-    );
+
+    const callbackArgs = callback.firstCall.args;
+
+    expect(callbackArgs[0]).to.exist;
+    expect(callbackArgs[0].message).to.equal("Expected editions to be defined");
+  });
   });
 });
