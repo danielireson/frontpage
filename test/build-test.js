@@ -85,4 +85,23 @@ describe("build", function () {
 
     expect(syncDistFiles.calledOnce).to.be.true;
   });
+
+  it("should error if no editions", async function () {
+    // given
+    const event = {};
+    const context = {};
+    const callback = sinon.spy();
+
+    sinon.stub(fs, "requireFiles").callsFake(() => []);
+
+    // when
+    await handler(event, context, callback);
+
+    // then
+    expect(callback.calledOnce).to.be.true;
+    expect(callback.firstCall.firstArg).to.exist;
+    expect(callback.firstCall.firstArg.message).to.equal(
+      "Expected editions to be defined"
+    );
+  });
 });
