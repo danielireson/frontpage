@@ -7,16 +7,16 @@ const s3 = require("../functions/build/services/s3");
 const template = require("../functions/build/services/template");
 
 describe("build", function () {
-  let requireFiles;
-  let writeDistFile;
-  let fetchLatest;
-  let syncDistFiles;
+  let fsRequireFilesStub;
+  let fsWriteDistFileStub;
+  let rssFetchLatestStub;
+  let s3SyncDistFilesStub;
 
   beforeEach(function () {
-    requireFiles = sinon.stub(fs, "requireFiles");
-    writeDistFile = sinon.stub(fs, "writeDistFile");
-    fetchLatest = sinon.stub(rss, "fetchLatest");
-    syncDistFiles = sinon.stub(s3, "syncDistFiles");
+    fsRequireFilesStub = sinon.stub(fs, "requireFiles");
+    fsWriteDistFileStub = sinon.stub(fs, "writeDistFile");
+    rssFetchLatestStub = sinon.stub(rss, "fetchLatest");
+    s3SyncDistFilesStub = sinon.stub(s3, "syncDistFiles");
   });
 
   afterEach(function () {
@@ -29,7 +29,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    requireFiles.callsFake(() => {
+    fsRequireFilesStub.callsFake(() => {
       return [
         {
           key: "example1",
@@ -52,7 +52,7 @@ describe("build", function () {
       ];
     });
 
-    fetchLatest.callsFake(async (feedURL) => {
+    rssFetchLatestStub.callsFake(async (feedURL) => {
       return [
         {
           title: `Post A for ${feedURL}`,
@@ -79,13 +79,13 @@ describe("build", function () {
       error: [],
     });
 
-    expect(requireFiles.calledOnce).to.be.true;
+    expect(fsRequireFilesStub.calledOnce).to.be.true;
 
-    expect(fetchLatest.callCount).to.equal(6);
+    expect(rssFetchLatestStub.callCount).to.equal(6);
 
-    expect(writeDistFile.callCount).to.be.equal(2);
+    expect(fsWriteDistFileStub.callCount).to.be.equal(2);
 
-    const writeDistFileArgs = writeDistFile.firstCall.args;
+    const writeDistFileArgs = fsWriteDistFileStub.firstCall.args;
 
     expect(writeDistFileArgs[0], "fileName").to.equal("example1");
 
@@ -97,7 +97,7 @@ describe("build", function () {
       `<a href="http://example.com/a" class="main-news-link" target="_blank" rel="noopener noreferrer">`
     );
 
-    expect(syncDistFiles.calledOnce).to.be.true;
+    expect(s3SyncDistFilesStub.calledOnce).to.be.true;
   });
 
   it("should error if no editions", async function () {
@@ -106,7 +106,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    requireFiles.callsFake(() => []);
+    fsRequireFilesStub.callsFake(() => []);
 
     // when
     await handler(event, context, callback);
@@ -128,7 +128,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    requireFiles.callsFake(() => {
+    fsRequireFilesStub.callsFake(() => {
       return [
         {
           key: "example",
@@ -138,7 +138,7 @@ describe("build", function () {
       ];
     });
 
-    fetchLatest.throws(() => {
+    rssFetchLatestStub.throws(() => {
       throw new Error("Unable to fetch latest posts");
     });
 
@@ -163,7 +163,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    requireFiles.callsFake(() => {
+    fsRequireFilesStub.callsFake(() => {
       return [
         {
           key: "example",
@@ -173,7 +173,7 @@ describe("build", function () {
       ];
     });
 
-    fetchLatest.callsFake(async (feedURL) => {
+    rssFetchLatestStub.callsFake(async (feedURL) => {
       return [
         {
           title: `Post A for ${feedURL}`,
