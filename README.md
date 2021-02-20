@@ -10,6 +10,9 @@ aws s3api create-bucket \
 # create parameters config file
 cp config/exmaple.json config/prod.json
 
+# invoke locally
+npm run build
+
 # package stack
 aws cloudformation package \
   --template template.yml \

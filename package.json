@@ -4,6 +4,7 @@
   "description": "Daily news aggregator",
   "private": true,
   "scripts": {
+    "build": "node -e 'require(\"./functions/build\").handler()'",
     "test": "NODE_ENV=test mocha 'test/**/*-test.js'",
     "postinstall": "(cd functions/build && npm install) && (cd functions/render && npm install)"
   },
