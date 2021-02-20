@@ -1,6 +1,7 @@
 const { expect } = require("chai");
 const sinon = require("sinon");
 const { handler } = require("../functions/build");
+const log = require("../functions/build/services/log");
 const fs = require("../functions/build/services/fs");
 const rss = require("../functions/build/services/rss");
 const s3 = require("../functions/build/services/s3");
@@ -163,6 +164,8 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
+    const logErrorSpy = sinon.spy(log, "error");
+
     fsRequireFilesStub.callsFake(() => {
       return [
         {
@@ -200,5 +203,9 @@ describe("build", function () {
 
     expect(callbackArgs[0], "error").to.exist;
     expect(callbackArgs[0].message, "error").to.equal("Build failed");
+    expect(logErrorSpy.firstCall.firstArg).to.deep.equal({
+      info: [],
+      error: ["example: Build error"],
+    });
   });
 });
