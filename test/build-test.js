@@ -72,8 +72,8 @@ describe("build", function () {
 
     const callbackArgs = callback.firstCall.args;
 
-    expect(callbackArgs[1]).to.exist;
-    expect(callbackArgs[1]).to.deep.equal({
+    expect(callbackArgs[1], "response").to.exist;
+    expect(callbackArgs[1], "response").to.deep.equal({
       errors: [],
     });
 
@@ -85,13 +85,13 @@ describe("build", function () {
 
     const writeDistFileArgs = writeDistFile.firstCall.args;
 
-    expect(writeDistFileArgs[0]).to.equal("example1");
+    expect(writeDistFileArgs[0], "fileName").to.equal("example1");
 
-    expect(writeDistFileArgs[1]).to.include(
+    expect(writeDistFileArgs[1], "html").to.include(
       '<span class="header-edition">Example 1</span>'
     );
 
-    expect(writeDistFileArgs[1]).to.include(
+    expect(writeDistFileArgs[1], "html").to.include(
       `<a href="http://example.com/a" class="main-news-link" target="_blank" rel="noopener noreferrer">`
     );
 
@@ -114,8 +114,10 @@ describe("build", function () {
 
     const callbackArgs = callback.firstCall.args;
 
-    expect(callbackArgs[0]).to.exist;
-    expect(callbackArgs[0].message).to.equal("Expected editions to be defined");
+    expect(callbackArgs[0], "error").to.exist;
+    expect(callbackArgs[0].message, "error").to.equal(
+      "Expected editions to be defined"
+    );
   });
   });
 });
