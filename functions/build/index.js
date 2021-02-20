@@ -16,7 +16,7 @@ module.exports.handler = async (event, context, callback) => {
   }
 
   if (!editions.length) {
-    console.error("Expected editions to be defined");
+    callback(new Error("Expected editions to be defined"));
     return;
   }
 
