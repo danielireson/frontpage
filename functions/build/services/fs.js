@@ -12,4 +12,4 @@ module.exports.requireFiles = (fileDirectory, extension) => {
     .map((file) => require(path.resolve(rootPath, file)));
 };
 
-module.exports.createTempFile = (path, data) => {};
+module.exports.createDistFile = (path, data) => {};

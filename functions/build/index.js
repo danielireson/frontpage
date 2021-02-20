@@ -41,10 +41,10 @@ module.exports.handler = async (event, context, callback) => {
       items: post.filterPosts(posts),
     });
 
-    fs.createTempFile(edition.key, html);
+    fs.createDistFile(edition.key, html);
   }
 
-  s3.syncTempFiles();
+  s3.syncDistFiles();
 
   callback(null, response);
 };

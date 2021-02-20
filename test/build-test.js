@@ -33,9 +33,9 @@ describe("build", function () {
         ];
       });
 
-    const createTempFile = sinon.stub(fs, "createTempFile");
+    const createDistFile = sinon.stub(fs, "createDistFile");
 
-    const syncTempFiles = sinon.stub(s3, "syncTempFiles");
+    const syncDistFiles = sinon.stub(s3, "syncDistFiles");
 
     // when
     await handler(event, context, callback);
@@ -68,20 +68,20 @@ describe("build", function () {
 
     expect(fetchLatest.callCount).to.equal(4);
 
-    expect(createTempFile.callCount).to.be.equal(1);
+    expect(createDistFile.callCount).to.be.equal(1);
 
-    const createTempFileArgs = createTempFile.firstCall.args;
+    const createDistFileArgs = createDistFile.firstCall.args;
 
-    expect(createTempFileArgs[0]).to.equal("united-kingdom");
+    expect(createDistFileArgs[0]).to.equal("united-kingdom");
 
-    expect(createTempFileArgs[1]).to.include(
+    expect(createDistFileArgs[1]).to.include(
       '<span class="header-edition">United Kingdom</span>'
     );
 
-    expect(createTempFileArgs[1]).to.include(
+    expect(createDistFileArgs[1]).to.include(
       '<a href="http://example.com/a" class="main-news-link">'
     );
 
-    expect(syncTempFiles.calledOnce).to.be.true;
+    expect(syncDistFiles.calledOnce).to.be.true;
   });
 });
