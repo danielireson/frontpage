@@ -55,18 +55,19 @@ describe("build", function () {
 
     expect(requireFiles.calledOnce).to.be.true;
 
-    expect(requireFiles.firstCall.returnValue).to.deep.include({
+    const expectedUnitedKingdomEdition = {
       key: "united-kingdom",
       name: "United Kingdom",
-      feeds: [
-        "https://example.co.uk/1",
-        "https://example.co.uk/2",
-        "https://example.co.uk/3",
-        "https://example.co.uk/4",
-      ],
-    });
+      feeds: ["https://feeds.bbci.co.uk/news/rss.xml"],
+    };
 
-    expect(fetchLatest.callCount).to.equal(4);
+    expect(requireFiles.firstCall.returnValue).to.deep.include(
+      expectedUnitedKingdomEdition
+    );
+
+    expect(fetchLatest.callCount).to.equal(
+      expectedUnitedKingdomEdition.feeds.length
+    );
 
     expect(createDistFile.callCount).to.be.equal(1);
 
