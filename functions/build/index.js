@@ -1,5 +1,6 @@
 "use strict";
 
+const log = require("./services/log");
 const fs = require("./services/fs");
 const rss = require("./services/rss");
 const post = require("./services/post");
@@ -21,7 +22,8 @@ module.exports.handler = async (event, context, callback) => {
   }
 
   const response = {
-    errors: [],
+    info: [],
+    error: [],
   };
 
   for (const edition of editions) {
@@ -32,19 +34,30 @@ module.exports.handler = async (event, context, callback) => {
         const latestPosts = await rss.fetchLatest(feed);
         posts.push(...latestPosts);
       } catch (error) {
-        response.errors.push(`${feed}: ${error.message}`);
+        // allow fetch errors but track them
+        response.info.push(`${feed}: ${error.message}`);
       }
     }
 
-    const html = template.buildTemplate("edition", {
-      name: edition.name,
-      items: post.filterPosts(posts),
-    });
+    try {
+      const html = template.buildTemplate("edition", {
+        name: edition.name,
+        items: post.filterPosts(posts),
+      });
 
-    fs.writeDistFile(edition.key, html);
+      fs.writeDistFile(edition.key, html);
+    } catch (error) {
+      // build errors should not occur
+      response.error.push(`${edition.key}: ${error.message}`);
+    }
   }
 
   s3.syncDistFiles();
 
-  callback(null, response);
+  if (response.error.length) {
+    log.error(response);
+    callback(new Error("Build failed"));
+  } else {
+    callback(null, response);
+  }
 };

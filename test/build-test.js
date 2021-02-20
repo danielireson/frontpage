@@ -4,6 +4,7 @@ const { handler } = require("../functions/build");
 const fs = require("../functions/build/services/fs");
 const rss = require("../functions/build/services/rss");
 const s3 = require("../functions/build/services/s3");
+const template = require("../functions/build/services/template");
 
 describe("build", function () {
   let requireFiles;
@@ -74,7 +75,8 @@ describe("build", function () {
 
     expect(callbackArgs[1], "response").to.exist;
     expect(callbackArgs[1], "response").to.deep.equal({
-      errors: [],
+      info: [],
+      error: [],
     });
 
     expect(requireFiles.calledOnce).to.be.true;
@@ -150,9 +152,53 @@ describe("build", function () {
 
     expect(callbackArgs[1], "response").to.exist;
     expect(callbackArgs[1], "response").to.deep.equal({
-      errors: ["https://example.com/feed: Unable to fetch latest posts"],
+      info: ["https://example.com/feed: Unable to fetch latest posts"],
+      error: [],
     });
   });
 
+  it("should handle build errors", async function () {
+    // given
+    const event = {};
+    const context = {};
+    const callback = sinon.spy();
+
+    requireFiles.callsFake(() => {
+      return [
+        {
+          key: "example",
+          name: "Example",
+          feeds: ["https://example.com/feed"],
+        },
+      ];
+    });
+
+    fetchLatest.callsFake(async (feedURL) => {
+      return [
+        {
+          title: `Post A for ${feedURL}`,
+          link: "http://example.com/a",
+        },
+        {
+          title: `Post B for ${feedURL}`,
+          link: "http://example.com/b",
+        },
+      ];
+    });
+
+    sinon.stub(template, "buildTemplate").throws(() => {
+      throw new Error("Build error");
+    });
+
+    // when
+    await handler(event, context, callback);
+
+    // then
+    expect(callback.calledOnce).to.be.true;
+
+    const callbackArgs = callback.firstCall.args;
+
+    expect(callbackArgs[0], "error").to.exist;
+    expect(callbackArgs[0].message, "error").to.equal("Build failed");
   });
 });
