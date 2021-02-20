@@ -142,11 +142,16 @@
       <main>
         <ul class="main-news-items">
           {{#each items as |item|}}
-            <li class="main-news-item">
-              <a href="{{item.link}}" class="main-news-link">
-                {{item.title}}
-              </a>
-            </li>
+          <li class="main-news-item">
+            <a
+              href="{{item.link}}"
+              class="main-news-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{item.title}}
+            </a>
+          </li>
           {{/each}}
         </ul>
       </main>
