@@ -12,6 +12,6 @@ module.exports.requireFiles = (fileDirectory, extension) => {
     .map((file) => require(path.resolve(rootPath, file)));
 };
 
-module.exports.createDistFile = (fileName, data) => {
+module.exports.writeDistFile = (fileName, data) => {
   fs.writeFileSync(path.resolve(__dirname, `../dist/${fileName}.html`), data);
 };

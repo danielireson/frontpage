@@ -41,7 +41,7 @@ module.exports.handler = async (event, context, callback) => {
       items: post.filterPosts(posts),
     });
 
-    fs.createDistFile(edition.key, html);
+    fs.writeDistFile(edition.key, html);
   }
 
   s3.syncDistFiles();

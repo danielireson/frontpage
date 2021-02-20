@@ -33,7 +33,7 @@ describe("build", function () {
         ];
       });
 
-    const createDistFile = sinon.stub(fs, "createDistFile");
+    const writeDistFile = sinon.stub(fs, "writeDistFile");
 
     const syncDistFiles = sinon.stub(s3, "syncDistFiles");
 
@@ -69,17 +69,17 @@ describe("build", function () {
       expectedUnitedKingdomEdition.feeds.length
     );
 
-    expect(createDistFile.callCount).to.be.equal(1);
+    expect(writeDistFile.callCount).to.be.equal(1);
 
-    const createDistFileArgs = createDistFile.firstCall.args;
+    const writeDistFileArgs = writeDistFile.firstCall.args;
 
-    expect(createDistFileArgs[0]).to.equal("united-kingdom");
+    expect(writeDistFileArgs[0]).to.equal("united-kingdom");
 
-    expect(createDistFileArgs[1]).to.include(
+    expect(writeDistFileArgs[1]).to.include(
       '<span class="header-edition">United Kingdom</span>'
     );
 
-    expect(createDistFileArgs[1]).to.include(
+    expect(writeDistFileArgs[1]).to.include(
       `<a href="http://example.com/a" class="main-news-link" target="_blank" rel="noopener noreferrer">`
     );
 
