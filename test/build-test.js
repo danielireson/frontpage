@@ -2,19 +2,20 @@ const { expect } = require("chai");
 const sinon = require("sinon");
 const { handler } = require("../functions/build");
 const log = require("../functions/build/services/log");
+const edition = require("../functions/build/services/edition");
 const fs = require("../functions/build/services/fs");
 const rss = require("../functions/build/services/rss");
 const s3 = require("../functions/build/services/s3");
 const template = require("../functions/build/services/template");
 
 describe("build", function () {
-  let fsRequireFilesStub;
+  let editionReadEditionsStub;
   let fsWriteDistFileStub;
   let rssFetchLatestStub;
   let s3SyncDistFilesStub;
 
   beforeEach(function () {
-    fsRequireFilesStub = sinon.stub(fs, "requireFiles");
+    editionReadEditionsStub = sinon.stub(edition, "readEditions");
     fsWriteDistFileStub = sinon.stub(fs, "writeDistFile");
     rssFetchLatestStub = sinon.stub(rss, "fetchLatest");
     s3SyncDistFilesStub = sinon.stub(s3, "syncDistFiles");
@@ -30,7 +31,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    fsRequireFilesStub.callsFake(() => {
+    editionReadEditionsStub.callsFake(() => {
       return [
         {
           key: "example1",
@@ -80,7 +81,7 @@ describe("build", function () {
       error: [],
     });
 
-    expect(fsRequireFilesStub.calledOnce).to.be.true;
+    expect(editionReadEditionsStub.calledOnce).to.be.true;
 
     expect(rssFetchLatestStub.callCount).to.equal(6);
 
@@ -107,7 +108,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    fsRequireFilesStub.callsFake(() => []);
+    editionReadEditionsStub.callsFake(() => []);
 
     // when
     await handler(event, context, callback);
@@ -129,7 +130,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    fsRequireFilesStub.callsFake(() => {
+    editionReadEditionsStub.callsFake(() => {
       return [
         {
           key: "example",
@@ -166,7 +167,7 @@ describe("build", function () {
 
     const logErrorSpy = sinon.spy(log, "error");
 
-    fsRequireFilesStub.callsFake(() => {
+    editionReadEditionsStub.callsFake(() => {
       return [
         {
           key: "example",
@@ -217,7 +218,7 @@ describe("build", function () {
 
     const logErrorSpy = sinon.spy(log, "error");
 
-    fsRequireFilesStub.callsFake(() => {
+    editionReadEditionsStub.callsFake(() => {
       return [
         {
           key: "example",

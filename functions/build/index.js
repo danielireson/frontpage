@@ -1,6 +1,7 @@
 "use strict";
 
 const log = require("./services/log");
+const edition = require("./services/edition");
 const fs = require("./services/fs");
 const rss = require("./services/rss");
 const post = require("./services/post");
@@ -11,7 +12,7 @@ module.exports.handler = async (event, context, callback) => {
   let editions;
 
   try {
-    editions = fs.requireFiles("editions", "json");
+    editions = edition.readEditions();
   } catch (error) {
     callback(error);
   }
@@ -26,29 +27,29 @@ module.exports.handler = async (event, context, callback) => {
     error: [],
   };
 
-  for (const edition of editions) {
+  for (const editionToBuild of editions) {
     const posts = [];
 
-    for (const feed of edition.feeds) {
+    for (const feedToFetch of editionToBuild.feeds) {
       try {
-        const latestPosts = await rss.fetchLatest(feed);
+        const latestPosts = await rss.fetchLatest(feedToFetch);
         posts.push(...latestPosts);
       } catch (error) {
         // allow fetch errors but track them
-        response.info.push(`fetch(${feed}): ${error.message}`);
+        response.info.push(`fetch(${feedToFetch}): ${error.message}`);
       }
     }
 
     try {
       const html = template.buildTemplate("edition", {
-        name: edition.name,
+        name: editionToBuild.name,
         items: post.filterPosts(posts),
       });
 
-      fs.writeDistFile(edition.key, html);
+      fs.writeDistFile(editionToBuild.key, html);
     } catch (error) {
       // build errors should not occur
-      response.error.push(`build(${edition.key}): ${error.message}`);
+      response.error.push(`build(${editionToBuild.key}): ${error.message}`);
     }
   }
 
