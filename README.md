@@ -27,4 +27,10 @@ aws --region us-east-1 cloudformation create-stack \
   --capabilities CAPABILITY_IAM \
   --timeout-in-minutes 10
 
+# update stack
+aws --region us-east-1 cloudformation deploy \
+  --stack-name frontpage-today-prod \
+  --template-file deploy-template.yml \
+  --capabilities CAPABILITY_IAM
+
 ```
