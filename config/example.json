@@ -1,6 +1,6 @@
 [
   {
-    "ParameterKey": "ContentBucket",
+    "ParameterKey": "DomainName",
     "ParameterValue": ""
   },
   {
