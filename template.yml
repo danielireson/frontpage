@@ -7,10 +7,6 @@ Parameters:
   CertificateARN:
     Type: String
 
-Environment:
-  Variables:
-    DOMAIN_NAME: !Ref DomainName
-
 Resources:
   DomainBucketRootPolicy:
     Type: AWS::S3::BucketPolicy
@@ -127,6 +123,9 @@ Resources:
       Role: !GetAtt LambdaRole.Arn
       Runtime: nodejs12.x
       Timeout: 5
+      Environment:
+        Variables:
+          DOMAIN_NAME: !Ref DomainName
   VersionedLambdaBuildFunction:
     Type: AWS::Lambda::Version
     Properties:
