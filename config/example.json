@@ -1,9 +1,5 @@
 [
   {
-    "ParameterKey": "DeploymentBucket",
-    "ParameterValue": ""
-  },
-  {
     "ParameterKey": "ContentBucket",
     "ParameterValue": ""
   },
