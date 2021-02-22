@@ -2,30 +2,30 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
-  DomainName:
+  DeploymentBucket:
+    Type: String
+  ContentBucket:
     Type: String
   CertificateARN:
-    Type: String
-  DeploymentBucket:
     Type: String
 
 Resources:
   DomainBucketRootPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref DomainName
+      Bucket: !Ref ContentBucket
       PolicyDocument:
         Statement:
           - Action:
               - s3:GetObject
             Effect: Allow
             Resource:
-              - !Sub arn:aws:s3:::${DomainName}/*
+              - !Sub arn:aws:s3:::${ContentBucket}/*
             Principal: "*"
   DomainBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref DomainName
+      BucketName: !Ref ContentBucket
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: index.html
@@ -38,7 +38,7 @@ Resources:
               HTTPPort: 80
               HTTPSPort: 443
               OriginProtocolPolicy: http-only
-            DomainName: !Sub ${DomainName}.s3-website-${AWS::Region}.amazonaws.com
+            DomainName: !Sub ${ContentBucket}.s3-website-${AWS::Region}.amazonaws.com
             Id: origin
         DefaultCacheBehavior:
           ForwardedValues:
@@ -49,7 +49,7 @@ Resources:
             - EventType: "origin-request"
               LambdaFunctionARN: !Ref VersionedLambdaRenderFunction
         Aliases:
-          - !Sub ${DomainName}
+          - !Sub ${ContentBucket}
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateARN
           SslSupportMethod: sni-only
@@ -57,8 +57,8 @@ Resources:
   DomainBucketDistributionRecordSet:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: !Sub ${DomainName}.
-      Name: !Sub ${DomainName}.
+      HostedZoneName: !Sub ${ContentBucket}.
+      Name: !Sub ${ContentBucket}.
       Type: A
       AliasTarget:
         DNSName: !GetAtt DomainBucketDistribution.DomainName
@@ -66,10 +66,10 @@ Resources:
   DomainBucketWWW:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub www.${DomainName}
+      BucketName: !Sub www.${ContentBucket}
       WebsiteConfiguration:
         RedirectAllRequestsTo:
-          HostName: !Sub ${DomainName}
+          HostName: !Sub ${ContentBucket}
           Protocol: https
   DomainBucketWWWDistribution:
     Type: AWS::CloudFront::Distribution
@@ -80,7 +80,7 @@ Resources:
               HTTPPort: 80
               HTTPSPort: 443
               OriginProtocolPolicy: http-only
-            DomainName: !Sub www.${DomainName}.s3-website-${AWS::Region}.amazonaws.com
+            DomainName: !Sub www.${ContentBucket}.s3-website-${AWS::Region}.amazonaws.com
             Id: origin
         DefaultCacheBehavior:
           ForwardedValues:
@@ -88,7 +88,7 @@ Resources:
           TargetOriginId: origin
           ViewerProtocolPolicy: redirect-to-https
         Aliases:
-          - !Sub www.${DomainName}
+          - !Sub www.${ContentBucket}
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateARN
           SslSupportMethod: sni-only
@@ -96,8 +96,8 @@ Resources:
   DomainBucketDistributionWWWRecordSet:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: !Sub ${DomainName}.
-      Name: !Sub www.${DomainName}.
+      HostedZoneName: !Sub ${ContentBucket}.
+      Name: !Sub www.${ContentBucket}.
       Type: A
       AliasTarget:
         DNSName: !GetAtt DomainBucketWWWDistribution.DomainName
@@ -149,4 +149,4 @@ Outputs:
     Value: !GetAtt DomainBucketDistribution.DomainName
   ApplicationURL:
     Description: The public application URL
-    Value: !Ref DomainName
+    Value: !Ref ContentBucket

@@ -1,14 +1,14 @@
 [
   {
-    "ParameterKey": "DomainName",
+    "ParameterKey": "DeploymentBucket",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "ContentBucket",
     "ParameterValue": ""
   },
   {
     "ParameterKey": "CertificateARN",
-    "ParameterValue": ""
-  },
-  {
-    "ParameterKey": "DeploymentBucket",
     "ParameterValue": ""
   }
 ]
