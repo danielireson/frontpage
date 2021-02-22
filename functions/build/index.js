@@ -35,7 +35,7 @@ module.exports.handler = async (event, context, callback) => {
         posts.push(...latestPosts);
       } catch (error) {
         // allow fetch errors but track them
-        response.info.push(`${feed}: ${error.message}`);
+        response.info.push(`fetch(${feed}): ${error.message}`);
       }
     }
 
@@ -48,7 +48,7 @@ module.exports.handler = async (event, context, callback) => {
       fs.writeDistFile(edition.key, html);
     } catch (error) {
       // build errors should not occur
-      response.error.push(`${edition.key}: ${error.message}`);
+      response.error.push(`build(${edition.key}): ${error.message}`);
     }
   }
 

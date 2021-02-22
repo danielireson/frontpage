@@ -153,7 +153,7 @@ describe("build", function () {
 
     expect(callbackArgs[1], "response").to.exist;
     expect(callbackArgs[1], "response").to.deep.equal({
-      info: ["https://example.com/feed: Unable to fetch latest posts"],
+      info: ["fetch(https://example.com/feed): Unable to fetch latest posts"],
       error: [],
     });
   });
@@ -205,7 +205,7 @@ describe("build", function () {
     expect(callbackArgs[0].message, "error").to.equal("Build failed");
     expect(logErrorSpy.firstCall.firstArg).to.deep.equal({
       info: [],
-      error: ["example: Build error"],
+      error: ["build(example): Build error"],
     });
   });
 });
