@@ -14,7 +14,7 @@ cp config/exmaple.json config/prod.json
 npm run build
 
 # package stack
-aws cloudformation package \
+aws --region us-east-1 cloudformation package \
   --template template.yml \
   --output-template-file deploy-template.yml \
   --s3-bucket frontpage-today-deployments
