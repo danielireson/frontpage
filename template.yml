@@ -9,6 +9,10 @@ Parameters:
   CertificateARN:
     Type: String
 
+Environment:
+  Variables:
+    CONTENT_BUCKET: !Ref ContentBucket
+
 Resources:
   DomainBucketRootPolicy:
     Type: AWS::S3::BucketPolicy
