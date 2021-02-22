@@ -208,4 +208,55 @@ describe("build", function () {
       error: ["build(example): Build error"],
     });
   });
+
+  it("should handle sync errors", async function () {
+    // given
+    const event = {};
+    const context = {};
+    const callback = sinon.spy();
+
+    const logErrorSpy = sinon.spy(log, "error");
+
+    fsRequireFilesStub.callsFake(() => {
+      return [
+        {
+          key: "example",
+          name: "Example",
+          feeds: ["https://example.com/feed"],
+        },
+      ];
+    });
+
+    rssFetchLatestStub.callsFake(async (feedURL) => {
+      return [
+        {
+          title: `Post A for ${feedURL}`,
+          link: "http://example.com/a",
+        },
+        {
+          title: `Post B for ${feedURL}`,
+          link: "http://example.com/b",
+        },
+      ];
+    });
+
+    s3SyncDistFilesStub.throws(() => {
+      throw new Error("Sync error");
+    });
+
+    // when
+    await handler(event, context, callback);
+
+    // then
+    expect(callback.calledOnce).to.be.true;
+
+    const callbackArgs = callback.firstCall.args;
+
+    expect(callbackArgs[0], "error").to.exist;
+    expect(callbackArgs[0].message, "error").to.equal("Build failed");
+    expect(logErrorSpy.firstCall.firstArg).to.deep.equal({
+      info: [],
+      error: ["sync: Sync error"],
+    });
+  });
 });

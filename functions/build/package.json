@@ -1,6 +1,7 @@
 {
   "private": true,
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.6.0",
     "handlebars": "^4.7.7",
     "html-minifier": "^4.0.0",
     "rss-parser": "^3.11.0"

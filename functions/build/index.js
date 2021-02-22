@@ -52,7 +52,12 @@ module.exports.handler = async (event, context, callback) => {
     }
   }
 
-  s3.syncDistFiles();
+  try {
+    await s3.syncDistFiles();
+  } catch (error) {
+    // sync errors should not occur
+    response.error.push(`sync: ${error.message}`);
+  }
 
   if (response.error.length) {
     log.error(response);
