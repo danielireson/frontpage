@@ -9,7 +9,7 @@ exports.handler = (event, context, callback) => {
   const country = request.headers["cloudfront-viewer-country"];
   const countryCode = country && (country[0] ? country[0].value : null);
 
-  if (params.edition) {
+  if (edition.isValid(params.edition)) {
     // override edition by query parameter
     request.uri = `/${params.edition}.html`;
   } else if (countryCode) {

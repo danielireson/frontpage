@@ -14,11 +14,11 @@ describe("render", function () {
         {
           cf: {
             request: {
-              querystring: "edition=example",
+              querystring: "edition=united-kingdom",
               headers: {
                 "cloudfront-viewer-country": [
                   {
-                    value: "GB",
+                    value: "US",
                   },
                 ],
               },
@@ -39,7 +39,7 @@ describe("render", function () {
     const callbackArgs = callback.firstCall.args;
 
     expect(callbackArgs[1], "request").to.exist;
-    expect(callbackArgs[1].uri, "request").to.equal("/example.html");
+    expect(callbackArgs[1].uri, "request").to.equal("/united-kingdom.html");
   });
 
   it("should handle viewer country code", function () {
