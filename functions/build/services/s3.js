@@ -13,6 +13,7 @@ module.exports.syncDistFiles = async (bucketName) => {
         Bucket: process.env.DOMAIN_NAME,
         Key: fileName,
         Body: fs.readDistFile(fileName),
+        ContentType: "text/html",
       });
 
       await client.send(command);
