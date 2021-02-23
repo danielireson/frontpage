@@ -125,6 +125,7 @@ Resources:
       Timeout: 5
       Environment:
         Variables:
+          NODE_ENV: production
           DOMAIN_NAME: !Ref DomainName
   VersionedLambdaBuildFunction:
     Type: AWS::Lambda::Version
