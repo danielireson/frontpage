@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+set -e
+
+aws --region us-east-1 cloudformation package \
+  --template template.yml \
+  --output-template-file deploy-template.yml \
+  --s3-bucket frontpage-today-deployments
+
+aws --region us-east-1 cloudformation deploy \
+  --stack-name frontpage-today-prod \
+  --template-file deploy-template.yml \
+  --capabilities CAPABILITY_IAM
