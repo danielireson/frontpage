@@ -100,7 +100,7 @@ Resources:
       AliasTarget:
         DNSName: !GetAtt DomainBucketWWWDistribution.DomainName
         HostedZoneId: Z2FDTNDATAQYW2
-  LambdaRole:
+  LambdaBuildRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -114,13 +114,24 @@ Resources:
             Action: sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - !Ref LambdaBuildRoleBucketPolicy
+  LambdaBuildRoleBucketPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+            Resource: !Sub arn:aws:s3:::${DomainName}/*
   LambdaBuildFunction:
     Type: AWS::Lambda::Function
     Properties:
       Code: functions/build
       Handler: index.handler
       MemorySize: 128
-      Role: !GetAtt LambdaRole.Arn
+      Role: !GetAtt LambdaBuildRole.Arn
       Runtime: nodejs12.x
       Timeout: 5
       Environment:
@@ -131,13 +142,27 @@ Resources:
     Type: AWS::Lambda::Version
     Properties:
       FunctionName: !Ref LambdaBuildFunction
+  LambdaRenderRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - edgelambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
   LambdaRenderFunction:
     Type: AWS::Lambda::Function
     Properties:
       Code: functions/render
       Handler: index.handler
       MemorySize: 128
-      Role: !GetAtt LambdaRole.Arn
+      Role: !GetAtt LambdaRenderRole.Arn
       Runtime: nodejs12.x
       Timeout: 5
   VersionedLambdaRenderFunction:
