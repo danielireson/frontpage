@@ -4,7 +4,7 @@
   "description": "Daily news aggregator",
   "private": true,
   "scripts": {
-    "build": "NODE_ENV=development node ./scripts/build.js",
+    "build": "NODE_ENV=development ./scripts/build",
     "test": "NODE_ENV=test mocha 'test/**/*-test.js'",
     "postinstall": "(cd functions/build && npm install) && (cd functions/render && npm install)"
   },
