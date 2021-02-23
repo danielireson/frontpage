@@ -5,9 +5,7 @@ const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const client = new S3Client();
 
 module.exports.syncDistFiles = async (bucketName) => {
-  // env variable is only set for prod
-  // do not sync in other environments
-  if (process.env.DOMAIN_NAME) {
+  if (process.env.NODE_ENV === "production") {
     const fileNames = fs.readDistDirectory();
 
     for (const fileName of fileNames) {
