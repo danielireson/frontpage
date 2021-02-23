@@ -44,7 +44,7 @@ Resources:
           TargetOriginId: origin
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
-            - EventType: "origin-request"
+            - EventType: origin-request
               LambdaFunctionARN: !Ref VersionedLambdaRenderFunction
         Aliases:
           - !Sub ${DomainName}
