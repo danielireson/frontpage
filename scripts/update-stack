@@ -7,6 +7,11 @@ if [ -z "$1" ] ; then
   exit 1
 fi
 
+if [ ! -f "config/$1.json" ]; then
+  echo 'Config not found'
+  exit 1
+fi
+
 aws --region us-east-1 cloudformation package \
   --template template.yml \
   --output-template-file deploy-template.yml \
