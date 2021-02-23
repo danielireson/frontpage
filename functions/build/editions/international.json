@@ -1,0 +1,5 @@
+{
+  "key": "international",
+  "name": "International",
+  "feeds": ["http://feeds.bbci.co.uk/news/world/rss.xml"]
+}
