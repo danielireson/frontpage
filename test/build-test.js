@@ -13,12 +13,14 @@ describe("build", function () {
   let fsWriteDistFileStub;
   let rssFetchLatestStub;
   let s3SyncDistFilesStub;
+  let logInfoSpy;
 
   beforeEach(function () {
     editionReadEditionsStub = sinon.stub(edition, "readEditions");
     fsWriteDistFileStub = sinon.stub(fs, "writeDistFile");
     rssFetchLatestStub = sinon.stub(rss, "fetchLatest");
     s3SyncDistFilesStub = sinon.stub(s3, "syncDistFiles");
+    logInfoSpy = sinon.spy(log, "info");
   });
 
   afterEach(function () {
@@ -165,8 +167,6 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    const logErrorSpy = sinon.spy(log, "error");
-
     editionReadEditionsStub.callsFake(() => {
       return [
         {
@@ -204,7 +204,7 @@ describe("build", function () {
 
     expect(callbackArgs[0], "error").to.exist;
     expect(callbackArgs[0].message, "error").to.equal("Build failed");
-    expect(logErrorSpy.firstCall.firstArg).to.deep.equal({
+    expect(logInfoSpy.firstCall.firstArg).to.deep.equal({
       info: [],
       error: ["build(example): Build error"],
     });
@@ -215,8 +215,6 @@ describe("build", function () {
     const event = {};
     const context = {};
     const callback = sinon.spy();
-
-    const logErrorSpy = sinon.spy(log, "error");
 
     editionReadEditionsStub.callsFake(() => {
       return [
@@ -255,7 +253,7 @@ describe("build", function () {
 
     expect(callbackArgs[0], "error").to.exist;
     expect(callbackArgs[0].message, "error").to.equal("Build failed");
-    expect(logErrorSpy.firstCall.firstArg).to.deep.equal({
+    expect(logInfoSpy.firstCall.firstArg).to.deep.equal({
       info: [],
       error: ["sync: Sync error"],
     });

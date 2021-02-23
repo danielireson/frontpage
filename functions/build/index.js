@@ -35,8 +35,8 @@ module.exports.handler = async (event, context, callback) => {
         const latestPosts = await rss.fetchLatest(feedToFetch);
         posts.push(...latestPosts);
       } catch (error) {
-        // allow fetch errors but track them
         response.info.push(`fetch(${feedToFetch}): ${error.message}`);
+        log.error(error);
       }
     }
 
@@ -48,20 +48,21 @@ module.exports.handler = async (event, context, callback) => {
 
       fs.writeDistFile(editionToBuild.key, html);
     } catch (error) {
-      // build errors should not occur
       response.error.push(`build(${editionToBuild.key}): ${error.message}`);
+      log.error(error);
     }
   }
 
   try {
     await s3.syncDistFiles();
   } catch (error) {
-    // sync errors should not occur
     response.error.push(`sync: ${error.message}`);
+    log.error(error);
   }
 
+  log.info(response);
+
   if (response.error.length) {
-    log.error(response);
     callback(new Error("Build failed"));
   } else {
     callback(null, response);
