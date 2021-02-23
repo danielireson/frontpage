@@ -2,19 +2,24 @@
 
 set -e
 
+if [ -z "$1" ] ; then
+  echo 'Expected config argument'
+  exit 1
+fi
+
 aws s3api create-bucket \
-  --bucket frontpage-today-deployments \
+  --bucket "frontpage-today-$1-deployments" \
   --region us-east-1 \
   --acl private
 
 aws --region us-east-1 cloudformation package \
   --template template.yml \
   --output-template-file deploy-template.yml \
-  --s3-bucket frontpage-today-deployments
+  --s3-bucket "frontpage-today-$1-deployments"
 
 aws --region us-east-1 cloudformation create-stack \
-  --stack-name frontpage-today-prod \
+  --stack-name "frontpage-today-$1" \
   --template-body file://deploy-template.yml \
-  --parameters file://config/prod.json \
+  --parameters "file://config/$1.json" \
   --capabilities CAPABILITY_IAM \
   --timeout-in-minutes 10

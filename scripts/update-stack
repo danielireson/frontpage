@@ -2,12 +2,17 @@
 
 set -e
 
+if [ -z "$1" ] ; then
+  echo 'Expected config argument'
+  exit 1
+fi
+
 aws --region us-east-1 cloudformation package \
   --template template.yml \
   --output-template-file deploy-template.yml \
-  --s3-bucket frontpage-today-deployments
+  --s3-bucket "frontpage-today-$1-deployments"
 
 aws --region us-east-1 cloudformation deploy \
-  --stack-name frontpage-today-prod \
+  --stack-name "frontpage-today-$1" \
   --template-file deploy-template.yml \
   --capabilities CAPABILITY_IAM
