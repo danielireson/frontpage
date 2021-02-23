@@ -3,7 +3,7 @@
 const querystring = require("querystring");
 const edition = require("./services/edition");
 
-exports.handler = (event, context, callback) => {
+module.exports.handler = (event, context, callback) => {
   const request = event.Records[0].cf.request;
   const params = querystring.parse(request.querystring);
   const country = request.headers["cloudfront-viewer-country"];
