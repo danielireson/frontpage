@@ -142,10 +142,20 @@ Resources:
         Variables:
           NODE_ENV: production
           S3_BUCKET: !Ref HostedZone
-  VersionedLambdaBuildFunction:
-    Type: AWS::Lambda::Version
+  LambdaBuildEventPermission:
+    Type: AWS::Lambda::Permission
     Properties:
-      FunctionName: !Ref LambdaBuildFunction
+      FunctionName: !GetAtt LambdaBuildFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt LambdaBuildEventRule.Arn
+  LambdaBuildEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      ScheduleExpression: rate(1 day)
+      Targets:
+        - Arn: !GetAtt LambdaBuildFunction.Arn
+          Id: build-event-rule
   LambdaRenderRole:
     Type: AWS::IAM::Role
     Properties:
