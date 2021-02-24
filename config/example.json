@@ -1,6 +1,6 @@
 [
   {
-    "ParameterKey": "DomainName",
+    "ParameterKey": "HostedZone",
     "ParameterValue": ""
   },
   {

@@ -2,7 +2,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
-  DomainName:
+  HostedZone:
     Type: String
   CertificateARN:
     Type: String
@@ -11,19 +11,19 @@ Resources:
   DomainBucketRootPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref DomainName
+      Bucket: !Ref HostedZone
       PolicyDocument:
         Statement:
           - Action:
               - s3:GetObject
             Effect: Allow
             Resource:
-              - !Sub arn:aws:s3:::${DomainName}/*
+              - !Sub arn:aws:s3:::${HostedZone}/*
             Principal: "*"
   DomainBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref DomainName
+      BucketName: !Ref HostedZone
       WebsiteConfiguration:
         IndexDocument: international.html
         ErrorDocument: international.html
@@ -36,7 +36,7 @@ Resources:
               HTTPPort: 80
               HTTPSPort: 443
               OriginProtocolPolicy: http-only
-            DomainName: !Sub ${DomainName}.s3-website-${AWS::Region}.amazonaws.com
+            DomainName: !Sub ${HostedZone}.s3-website-${AWS::Region}.amazonaws.com
             Id: origin
         DefaultCacheBehavior:
           ForwardedValues:
@@ -47,7 +47,7 @@ Resources:
             - EventType: origin-request
               LambdaFunctionARN: !Ref VersionedLambdaRenderFunction
         Aliases:
-          - !Sub ${DomainName}
+          - !Sub ${HostedZone}
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateARN
           SslSupportMethod: sni-only
@@ -55,8 +55,8 @@ Resources:
   DomainBucketDistributionRecordSet:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: !Sub ${DomainName}.
-      Name: !Sub ${DomainName}.
+      HostedZoneName: !Sub ${HostedZone}.
+      Name: !Sub ${HostedZone}.
       Type: A
       AliasTarget:
         DNSName: !GetAtt DomainBucketDistribution.DomainName
@@ -64,10 +64,10 @@ Resources:
   DomainBucketWWW:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub www.${DomainName}
+      BucketName: !Sub www.${HostedZone}
       WebsiteConfiguration:
         RedirectAllRequestsTo:
-          HostName: !Sub ${DomainName}
+          HostName: !Sub ${HostedZone}
           Protocol: https
   DomainBucketWWWDistribution:
     Type: AWS::CloudFront::Distribution
@@ -78,7 +78,7 @@ Resources:
               HTTPPort: 80
               HTTPSPort: 443
               OriginProtocolPolicy: http-only
-            DomainName: !Sub www.${DomainName}.s3-website-${AWS::Region}.amazonaws.com
+            DomainName: !Sub www.${HostedZone}.s3-website-${AWS::Region}.amazonaws.com
             Id: origin
         DefaultCacheBehavior:
           ForwardedValues:
@@ -86,7 +86,7 @@ Resources:
           TargetOriginId: origin
           ViewerProtocolPolicy: redirect-to-https
         Aliases:
-          - !Sub www.${DomainName}
+          - !Sub www.${HostedZone}
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateARN
           SslSupportMethod: sni-only
@@ -94,8 +94,8 @@ Resources:
   DomainBucketDistributionWWWRecordSet:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: !Sub ${DomainName}.
-      Name: !Sub www.${DomainName}.
+      HostedZoneName: !Sub ${HostedZone}.
+      Name: !Sub www.${HostedZone}.
       Type: A
       AliasTarget:
         DNSName: !GetAtt DomainBucketWWWDistribution.DomainName
@@ -124,7 +124,7 @@ Resources:
           - Effect: Allow
             Action:
               - s3:PutObject
-            Resource: !Sub arn:aws:s3:::${DomainName}/*
+            Resource: !Sub arn:aws:s3:::${HostedZone}/*
   LambdaBuildFunction:
     Type: AWS::Lambda::Function
     Properties:
@@ -137,7 +137,7 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          DOMAIN_NAME: !Ref DomainName
+          S3_BUCKET: !Ref HostedZone
   VersionedLambdaBuildFunction:
     Type: AWS::Lambda::Version
     Properties:
@@ -176,4 +176,4 @@ Outputs:
     Value: !GetAtt DomainBucketDistribution.DomainName
   ApplicationURL:
     Description: The public application URL
-    Value: !Ref DomainName
+    Value: !Ref HostedZone

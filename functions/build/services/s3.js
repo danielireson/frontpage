@@ -10,7 +10,7 @@ module.exports.syncDistFiles = async (bucketName) => {
 
     for (const fileName of fileNames) {
       const command = new PutObjectCommand({
-        Bucket: process.env.DOMAIN_NAME,
+        Bucket: process.env.S3_BUCKET,
         Key: fileName,
         Body: fs.readDistFile(fileName),
         ContentType: "text/html",
