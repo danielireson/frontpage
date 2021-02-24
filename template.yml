@@ -25,8 +25,8 @@ Resources:
     Properties:
       BucketName: !Ref HostedZone
       WebsiteConfiguration:
-        IndexDocument: international.html
-        ErrorDocument: international.html
+        IndexDocument: INT.html
+        ErrorDocument: INT.html
   DomainBucketDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
