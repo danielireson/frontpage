@@ -1,5 +1,5 @@
 {
-  "key": "united-kingdom",
+  "key": "GB",
   "name": "United Kingdom",
   "feeds": ["https://feeds.bbci.co.uk/news/rss.xml"]
 }

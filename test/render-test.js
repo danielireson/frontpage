@@ -7,42 +7,7 @@ describe("render", function () {
     sinon.restore();
   });
 
-  it("should handle query parameter overrides", function () {
-    // given
-    const event = {
-      Records: [
-        {
-          cf: {
-            request: {
-              querystring: "edition=united-kingdom",
-              headers: {
-                "cloudfront-viewer-country": [
-                  {
-                    value: "US",
-                  },
-                ],
-              },
-            },
-          },
-        },
-      ],
-    };
-    const context = {};
-    const callback = sinon.spy();
-
-    // when
-    handler(event, context, callback);
-
-    // then
-    expect(callback.calledOnce).to.be.true;
-
-    const callbackArgs = callback.firstCall.args;
-
-    expect(callbackArgs[1], "request").to.exist;
-    expect(callbackArgs[1].uri, "request").to.equal("/united-kingdom.html");
-  });
-
-  it("should handle viewer country code", function () {
+  it("should localise the edition to country code", function () {
     // given
     const event = {
       Records: [
@@ -74,7 +39,7 @@ describe("render", function () {
     const callbackArgs = callback.firstCall.args;
 
     expect(callbackArgs[1], "request").to.exist;
-    expect(callbackArgs[1].uri, "request").to.equal("/united-kingdom.html");
+    expect(callbackArgs[1].uri, "request").to.equal("/GB.html");
   });
 
   it("should default to international edition", function () {
@@ -103,6 +68,6 @@ describe("render", function () {
     const callbackArgs = callback.firstCall.args;
 
     expect(callbackArgs[1], "request").to.exist;
-    expect(callbackArgs[1].uri, "request").to.equal("/international.html");
+    expect(callbackArgs[1].uri, "request").to.equal("/INT.html");
   });
 });

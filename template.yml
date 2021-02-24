@@ -40,7 +40,9 @@ Resources:
             Id: origin
         DefaultCacheBehavior:
           ForwardedValues:
-            QueryString: true
+            QueryString: false
+            Headers:
+              - CloudFront-Viewer-Country
           TargetOriginId: origin
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
@@ -82,7 +84,9 @@ Resources:
             Id: origin
         DefaultCacheBehavior:
           ForwardedValues:
-            QueryString: true
+            QueryString: false
+            Headers:
+              - CloudFront-Viewer-Country
           TargetOriginId: origin
           ViewerProtocolPolicy: redirect-to-https
         Aliases:

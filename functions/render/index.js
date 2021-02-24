@@ -1,23 +1,17 @@
 "use strict";
 
-const querystring = require("querystring");
-const edition = require("./services/edition");
-
 module.exports.handler = (event, context, callback) => {
   const request = event.Records[0].cf.request;
-  const params = querystring.parse(request.querystring);
   const country = request.headers["cloudfront-viewer-country"];
   const countryCode = country && (country[0] ? country[0].value : null);
+  const editions = ["GB"];
 
-  if (edition.isValid(params.edition)) {
-    // override edition by query parameter
-    request.uri = `/${params.edition}.html`;
-  } else if (countryCode) {
-    // determine edition from country code
-    request.uri = `/${edition.fromCountryCode(countryCode)}.html`;
+  if (editions.includes(countryCode)) {
+    // localised edition exists
+    request.uri = `/${countryCode}.html`;
   } else {
     // fallback to international edition
-    request.uri = "/international.html";
+    request.uri = "/INT.html";
   }
 
   callback(null, request);
