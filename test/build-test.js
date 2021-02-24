@@ -1,26 +1,26 @@
 const { expect } = require("chai");
 const sinon = require("sinon");
 const { handler } = require("../functions/build");
-const log = require("../functions/build/services/log");
-const edition = require("../functions/build/services/edition");
-const fs = require("../functions/build/services/fs");
-const rss = require("../functions/build/services/rss");
-const s3 = require("../functions/build/services/s3");
-const template = require("../functions/build/services/template");
+const logService = require("../functions/build/services/log");
+const editionService = require("../functions/build/services/edition");
+const fsService = require("../functions/build/services/fs");
+const rssService = require("../functions/build/services/rss");
+const s3Service = require("../functions/build/services/s3");
+const templateService = require("../functions/build/services/template");
 
 describe("build", function () {
-  let editionReadEditionsStub;
-  let fsWriteDistFileStub;
-  let rssFetchLatestStub;
-  let s3SyncDistFilesStub;
+  let readEditionsStub;
+  let writeDistFileStub;
+  let fetchLatestStub;
+  let syncDistFilesStub;
   let logInfoSpy;
 
   beforeEach(function () {
-    editionReadEditionsStub = sinon.stub(edition, "readEditions");
-    fsWriteDistFileStub = sinon.stub(fs, "writeDistFile");
-    rssFetchLatestStub = sinon.stub(rss, "fetchLatest");
-    s3SyncDistFilesStub = sinon.stub(s3, "syncDistFiles");
-    logInfoSpy = sinon.spy(log, "info");
+    readEditionsStub = sinon.stub(editionService, "readEditions");
+    writeDistFileStub = sinon.stub(fsService, "writeDistFile");
+    fetchLatestStub = sinon.stub(rssService, "fetchLatest");
+    syncDistFilesStub = sinon.stub(s3Service, "syncDistFiles");
+    logInfoSpy = sinon.spy(logService, "logInfo");
   });
 
   afterEach(function () {
@@ -33,7 +33,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    editionReadEditionsStub.callsFake(() => {
+    readEditionsStub.callsFake(() => {
       return [
         {
           key: "example1",
@@ -56,7 +56,7 @@ describe("build", function () {
       ];
     });
 
-    rssFetchLatestStub.callsFake(async (feedURL) => {
+    fetchLatestStub.callsFake(async (feedURL) => {
       return [
         {
           title: `Post A for ${feedURL}`,
@@ -83,13 +83,13 @@ describe("build", function () {
       error: [],
     });
 
-    expect(editionReadEditionsStub.calledOnce).to.be.true;
+    expect(readEditionsStub.calledOnce).to.be.true;
 
-    expect(rssFetchLatestStub.callCount).to.equal(6);
+    expect(fetchLatestStub.callCount).to.equal(6);
 
-    expect(fsWriteDistFileStub.callCount).to.be.equal(2);
+    expect(writeDistFileStub.callCount).to.be.equal(2);
 
-    const writeDistFileArgs = fsWriteDistFileStub.firstCall.args;
+    const writeDistFileArgs = writeDistFileStub.firstCall.args;
 
     expect(writeDistFileArgs[0], "fileName").to.equal("example1");
 
@@ -101,7 +101,7 @@ describe("build", function () {
       `<a href="http://example.com/a" class="main-news-link" target="_blank" rel="noopener noreferrer">`
     );
 
-    expect(s3SyncDistFilesStub.calledOnce).to.be.true;
+    expect(syncDistFilesStub.calledOnce).to.be.true;
   });
 
   it("should error if no editions", async function () {
@@ -110,7 +110,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    editionReadEditionsStub.callsFake(() => []);
+    readEditionsStub.callsFake(() => []);
 
     // when
     await handler(event, context, callback);
@@ -132,7 +132,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    editionReadEditionsStub.callsFake(() => {
+    readEditionsStub.callsFake(() => {
       return [
         {
           key: "example",
@@ -142,7 +142,7 @@ describe("build", function () {
       ];
     });
 
-    rssFetchLatestStub.throws(() => {
+    fetchLatestStub.throws(() => {
       throw new Error("Unable to fetch latest posts");
     });
 
@@ -167,7 +167,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    editionReadEditionsStub.callsFake(() => {
+    readEditionsStub.callsFake(() => {
       return [
         {
           key: "example",
@@ -177,7 +177,7 @@ describe("build", function () {
       ];
     });
 
-    rssFetchLatestStub.callsFake(async (feedURL) => {
+    fetchLatestStub.callsFake(async (feedURL) => {
       return [
         {
           title: `Post A for ${feedURL}`,
@@ -190,7 +190,7 @@ describe("build", function () {
       ];
     });
 
-    sinon.stub(template, "buildTemplate").throws(() => {
+    sinon.stub(templateService, "buildTemplate").throws(() => {
       throw new Error("Build error");
     });
 
@@ -216,7 +216,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    editionReadEditionsStub.callsFake(() => {
+    readEditionsStub.callsFake(() => {
       return [
         {
           key: "example",
@@ -226,7 +226,7 @@ describe("build", function () {
       ];
     });
 
-    rssFetchLatestStub.callsFake(async (feedURL) => {
+    fetchLatestStub.callsFake(async (feedURL) => {
       return [
         {
           title: `Post A for ${feedURL}`,
@@ -239,7 +239,7 @@ describe("build", function () {
       ];
     });
 
-    s3SyncDistFilesStub.throws(() => {
+    syncDistFilesStub.throws(() => {
       throw new Error("Sync error");
     });
 
