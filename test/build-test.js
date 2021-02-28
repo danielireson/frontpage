@@ -13,6 +13,7 @@ describe("build", function () {
   let fetchLatestStub;
   let syncDistFilesStub;
   let logInfoSpy;
+  let logErrorSpy;
 
   beforeEach(function () {
     readEditionsStub = sinon.stub(editionService, "readEditions");
@@ -20,6 +21,7 @@ describe("build", function () {
     writeDistFileStub = sinon.stub(storageService, "writeDistFile");
     syncDistFilesStub = sinon.stub(storageService, "syncDistFiles");
     logInfoSpy = sinon.spy(logger, "logInfo");
+    logErrorSpy = sinon.spy(logger, "logError");
   });
 
   afterEach(function () {
@@ -78,8 +80,7 @@ describe("build", function () {
 
     expect(callbackArgs[1], "response").to.exist;
     expect(callbackArgs[1], "response").to.deep.equal({
-      info: [],
-      error: [],
+      message: "Successfully built editions",
     });
 
     expect(readEditionsStub.calledOnce).to.be.true;
@@ -155,9 +156,11 @@ describe("build", function () {
 
     expect(callbackArgs[1], "response").to.exist;
     expect(callbackArgs[1], "response").to.deep.equal({
-      info: ["fetch(https://example.com/feed): Unable to fetch latest posts"],
-      error: [],
+      message: "Successfully built editions",
     });
+
+    expect(logInfoSpy.callCount, "logInfo").to.equal(1);
+    expect(logErrorSpy.callCount, "logError").to.equal(0);
   });
 
   it("should handle build errors", async function () {
@@ -203,10 +206,9 @@ describe("build", function () {
 
     expect(callbackArgs[0], "error").to.exist;
     expect(callbackArgs[0].message, "error").to.equal("Build failed");
-    expect(logInfoSpy.firstCall.firstArg).to.deep.equal({
-      info: [],
-      error: ["build(example): Build error"],
-    });
+
+    expect(logInfoSpy.callCount, "logInfo").to.equal(0);
+    expect(logErrorSpy.callCount, "logError").to.equal(1);
   });
 
   it("should handle sync errors", async function () {
@@ -252,9 +254,8 @@ describe("build", function () {
 
     expect(callbackArgs[0], "error").to.exist;
     expect(callbackArgs[0].message, "error").to.equal("Build failed");
-    expect(logInfoSpy.firstCall.firstArg).to.deep.equal({
-      info: [],
-      error: ["sync: Sync error"],
-    });
+
+    expect(logInfoSpy.callCount, "logInfo").to.equal(0);
+    expect(logErrorSpy.callCount, "logError").to.equal(1);
   });
 });

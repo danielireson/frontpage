@@ -21,49 +21,61 @@ module.exports.handler = async (event, context, callback) => {
     return;
   }
 
-  const response = {
-    info: [],
-    error: [],
-  };
+  try {
+    for (const edition of editions) {
+      const posts = [];
 
-  for (const edition of editions) {
-    const posts = [];
-
-    for (const feed of edition.feeds) {
-      try {
-        const latestPosts = await rssService.fetchLatest(feed);
-        posts.push(...latestPosts);
-      } catch (error) {
-        response.info.push(`fetch(${feed}): ${error.message}`);
-        logger.logError(error);
+      for (const feed of edition.feeds) {
+        const latest = await fetch(feed);
+        posts.push(...latest);
       }
+
+      await build(edition, posts);
     }
 
-    try {
-      const html = templateService.buildTemplate("edition", {
-        name: edition.name,
-        items: postService.filterPosts(posts),
-      });
+    await sync();
 
-      storageService.writeDistFile(edition.key, html);
-    } catch (error) {
-      response.error.push(`build(${edition.key}): ${error.message}`);
-      logger.logError(error);
-    }
+    callback(null, { message: "Successfully built editions" });
+  } catch (error) {
+    callback(new Error("Build failed"));
+  }
+};
+
+async function fetch(feed) {
+  const posts = [];
+
+  try {
+    const latestPosts = await rssService.fetchLatest(feed);
+    posts.push(...latestPosts);
+  } catch (error) {
+    // do not rethrow fetch errors but track them
+    logger.logInfo(`fetch error for ${feed}: ${error.message}`);
   }
 
+  return posts;
+}
+
+async function build(edition, posts) {
+  try {
+    const html = templateService.buildTemplate("edition", {
+      name: edition.name,
+      items: postService.filterPosts(posts),
+    });
+
+    storageService.writeDistFile(edition.key, html);
+  } catch (error) {
+    // rethrow build errors as they need handling
+    logger.logError(`build error for ${edition.key}': ${error.message}`);
+    throw error;
+  }
+}
+
+async function sync() {
   try {
     await storageService.syncDistFiles();
   } catch (error) {
-    response.error.push(`sync: ${error.message}`);
-    logger.logError(error);
+    // rethrow sync errors as they need handling
+    logger.logError(`sync error: ${error.message}`);
+    throw error;
   }
-
-  logger.logInfo(response);
-
-  if (response.error.length) {
-    callback(new Error("Build failed"));
-  } else {
-    callback(null, response);
-  }
-};
+}
