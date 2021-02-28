@@ -12,5 +12,8 @@ module.exports.buildTemplate = (templateName, data) => {
 
   const compiledTemplate = handlebars.compile(template)(data);
 
-  return minify(compiledTemplate, { collapseWhitespace: true });
+  return minify(compiledTemplate, {
+    collapseWhitespace: true,
+    minifyCSS: true,
+  });
 };
