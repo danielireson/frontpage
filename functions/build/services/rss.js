@@ -3,8 +3,12 @@
 const Parser = require("rss-parser");
 const parser = new Parser();
 
+const MAX_POSTS = 10;
+
 module.exports.fetchLatest = async (feedURL) => {
   const feed = await parser.parseURL(feedURL);
 
-  return feed.items || [];
+  return (feed.items || [])
+    .sort((a, b) => 0.5 - Math.random())
+    .slice(0, MAX_POSTS - 1);
 };
