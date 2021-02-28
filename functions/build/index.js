@@ -1,6 +1,6 @@
 "use strict";
 
-const logService = require("./services/log");
+const logger = require("./utils/logger");
 const editionService = require("./services/edition");
 const rssService = require("./services/rss");
 const postService = require("./services/post");
@@ -35,7 +35,7 @@ module.exports.handler = async (event, context, callback) => {
         posts.push(...latestPosts);
       } catch (error) {
         response.info.push(`fetch(${feed}): ${error.message}`);
-        logService.logError(error);
+        logger.logError(error);
       }
     }
 
@@ -48,7 +48,7 @@ module.exports.handler = async (event, context, callback) => {
       storageService.writeDistFile(edition.key, html);
     } catch (error) {
       response.error.push(`build(${edition.key}): ${error.message}`);
-      logService.logError(error);
+      logger.logError(error);
     }
   }
 
@@ -56,10 +56,10 @@ module.exports.handler = async (event, context, callback) => {
     await storageService.syncDistFiles();
   } catch (error) {
     response.error.push(`sync: ${error.message}`);
-    logService.logError(error);
+    logger.logError(error);
   }
 
-  logService.logInfo(response);
+  logger.logInfo(response);
 
   if (response.error.length) {
     callback(new Error("Build failed"));

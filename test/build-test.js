@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const sinon = require("sinon");
 const { handler } = require("../functions/build");
-const logService = require("../functions/build/services/log");
+const logger = require("../functions/build/utils/logger");
 const editionService = require("../functions/build/services/edition");
 const rssService = require("../functions/build/services/rss");
 const storageService = require("../functions/build/services/storage");
@@ -19,7 +19,7 @@ describe("build", function () {
     fetchLatestStub = sinon.stub(rssService, "fetchLatest");
     writeDistFileStub = sinon.stub(storageService, "writeDistFile");
     syncDistFilesStub = sinon.stub(storageService, "syncDistFiles");
-    logInfoSpy = sinon.spy(logService, "logInfo");
+    logInfoSpy = sinon.spy(logger, "logInfo");
   });
 
   afterEach(function () {
