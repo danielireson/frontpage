@@ -1,5 +1,15 @@
 {
   "key": "GB",
   "name": "United Kingdom",
-  "feeds": ["https://feeds.bbci.co.uk/news/rss.xml"]
+  "feeds": [
+    "https://feeds.bbci.co.uk/news/uk/rss.xml",
+    "https://metro.co.uk/feed/",
+    "https://www.standard.co.uk/rss",
+    "https://www.theguardian.com/uk/rss",
+    "https://www.independent.co.uk/rss",
+    "https://www.mirror.co.uk/?service=rss",
+    "https://feeds.feedburner.com/daily-express-uk-news",
+    "https://www.thesun.co.uk/feed/",
+    "https://www.dailymail.co.uk/home/index.rss"
+  ]
 }
