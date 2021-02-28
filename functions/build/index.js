@@ -2,11 +2,10 @@
 
 const logService = require("./services/log");
 const editionService = require("./services/edition");
-const fsService = require("./services/fs");
 const rssService = require("./services/rss");
 const postService = require("./services/post");
 const templateService = require("./services/template");
-const s3Service = require("./services/s3");
+const storageService = require("./services/storage");
 
 module.exports.handler = async (event, context, callback) => {
   let editions;
@@ -46,7 +45,7 @@ module.exports.handler = async (event, context, callback) => {
         items: postService.filterPosts(posts),
       });
 
-      fsService.writeDistFile(edition.key, html);
+      storageService.writeDistFile(edition.key, html);
     } catch (error) {
       response.error.push(`build(${edition.key}): ${error.message}`);
       logService.logError(error);
@@ -54,7 +53,7 @@ module.exports.handler = async (event, context, callback) => {
   }
 
   try {
-    await s3Service.syncDistFiles();
+    await storageService.syncDistFiles();
   } catch (error) {
     response.error.push(`sync: ${error.message}`);
     logService.logError(error);

@@ -3,9 +3,8 @@ const sinon = require("sinon");
 const { handler } = require("../functions/build");
 const logService = require("../functions/build/services/log");
 const editionService = require("../functions/build/services/edition");
-const fsService = require("../functions/build/services/fs");
 const rssService = require("../functions/build/services/rss");
-const s3Service = require("../functions/build/services/s3");
+const storageService = require("../functions/build/services/storage");
 const templateService = require("../functions/build/services/template");
 
 describe("build", function () {
@@ -17,9 +16,9 @@ describe("build", function () {
 
   beforeEach(function () {
     readEditionsStub = sinon.stub(editionService, "readEditions");
-    writeDistFileStub = sinon.stub(fsService, "writeDistFile");
     fetchLatestStub = sinon.stub(rssService, "fetchLatest");
-    syncDistFilesStub = sinon.stub(s3Service, "syncDistFiles");
+    writeDistFileStub = sinon.stub(storageService, "writeDistFile");
+    syncDistFilesStub = sinon.stub(storageService, "syncDistFiles");
     logInfoSpy = sinon.spy(logService, "logInfo");
   });
 
