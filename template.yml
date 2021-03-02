@@ -152,7 +152,7 @@ Resources:
   LambdaBuildEventRule:
     Type: AWS::Events::Rule
     Properties:
-      ScheduleExpression: rate(1 day)
+      ScheduleExpression: cron(0 0 * * ? *)
       Targets:
         - Arn: !GetAtt LambdaBuildFunction.Arn
           Id: build-event-rule
