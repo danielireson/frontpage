@@ -8,7 +8,7 @@ const storageService = require("../functions/build/services/storage");
 const templateService = require("../functions/build/services/template");
 
 describe("build", function () {
-  let readEditionsStub;
+  let loadEditionsStub;
   let writeDistFileStub;
   let fetchLatestStub;
   let syncDistFilesStub;
@@ -16,7 +16,7 @@ describe("build", function () {
   let logErrorSpy;
 
   beforeEach(function () {
-    readEditionsStub = sinon.stub(editionService, "readEditions");
+    loadEditionsStub = sinon.stub(editionService, "loadEditions");
     fetchLatestStub = sinon.stub(rssService, "fetchLatest");
     writeDistFileStub = sinon.stub(storageService, "writeDistFile");
     syncDistFilesStub = sinon.stub(storageService, "syncDistFiles");
@@ -34,7 +34,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    readEditionsStub.callsFake(() => {
+    loadEditionsStub.callsFake(() => {
       return [
         {
           key: "example1",
@@ -83,7 +83,7 @@ describe("build", function () {
       message: "Successfully built editions",
     });
 
-    expect(readEditionsStub.calledOnce).to.be.true;
+    expect(loadEditionsStub.calledOnce).to.be.true;
 
     expect(fetchLatestStub.callCount).to.equal(6);
 
@@ -110,7 +110,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    readEditionsStub.callsFake(() => []);
+    loadEditionsStub.callsFake(() => []);
 
     // when
     await handler(event, context, callback);
@@ -133,7 +133,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    readEditionsStub.callsFake(() => {
+    loadEditionsStub.callsFake(() => {
       return [
         {
           key: "example",
@@ -170,7 +170,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    readEditionsStub.callsFake(() => {
+    loadEditionsStub.callsFake(() => {
       return [
         {
           key: "example",
@@ -218,7 +218,7 @@ describe("build", function () {
     const context = {};
     const callback = sinon.spy();
 
-    readEditionsStub.callsFake(() => {
+    loadEditionsStub.callsFake(() => {
       return [
         {
           key: "example",

@@ -5,7 +5,7 @@ const fs = require("fs");
 
 const EDITIONS_DIR = "../editions";
 
-module.exports.readEditions = () => {
+module.exports.loadEditions = () => {
   const rootPath = path.resolve(__dirname, EDITIONS_DIR);
 
   return fs
