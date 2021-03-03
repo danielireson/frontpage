@@ -8,21 +8,8 @@ const templateService = require("./services/template");
 const storageService = require("./services/storage");
 
 module.exports.handler = async (event, context, callback) => {
-  let editions;
-
   try {
-    editions = editionService.readEditions();
-  } catch (error) {
-    callback(error);
-  }
-
-  if (!editions.length) {
-    callback(new Error("Expected editions to be defined"));
-    return;
-  }
-
-  try {
-    for (const edition of editions) {
+    for (const edition of load()) {
       const posts = [];
 
       for (const feed of edition.feeds) {
@@ -40,6 +27,21 @@ module.exports.handler = async (event, context, callback) => {
     callback(new Error("Build failed"));
   }
 };
+
+function load() {
+  try {
+    const editions = editionService.readEditions();
+
+    if (!editions.length) {
+      throw new Error("Expected editions to be defined");
+    }
+
+    return editions;
+  } catch (error) {
+    logger.logError(`config error: ${error.message}`);
+    throw error;
+  }
+}
 
 async function fetch(feed) {
   const posts = [];

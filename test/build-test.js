@@ -121,9 +121,10 @@ describe("build", function () {
     const callbackArgs = callback.firstCall.args;
 
     expect(callbackArgs[0], "error").to.exist;
-    expect(callbackArgs[0].message, "error").to.equal(
-      "Expected editions to be defined"
-    );
+    expect(callbackArgs[0].message, "error").to.equal("Build failed");
+
+    expect(logInfoSpy.callCount, "logInfo").to.equal(0);
+    expect(logErrorSpy.callCount, "logError").to.equal(1);
   });
 
   it("should handle fetch errors", async function () {
