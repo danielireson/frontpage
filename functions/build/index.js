@@ -64,7 +64,6 @@ async function build(edition, posts) {
 
     storageService.writeDistFile(edition.key, html);
   } catch (error) {
-    // rethrow build errors as they need handling
     logger.logError(`build error for ${edition.key}': ${error.message}`);
     throw error;
   }
@@ -74,7 +73,6 @@ async function sync() {
   try {
     await storageService.syncDistFiles();
   } catch (error) {
-    // rethrow sync errors as they need handling
     logger.logError(`sync error: ${error.message}`);
     throw error;
   }
