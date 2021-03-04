@@ -9,18 +9,18 @@ const storageService = require("./services/storage");
 
 module.exports.handler = async (event, context, callback) => {
   try {
-    for (const edition of loadEditions()) {
+    for (const definition of loadEditionDefinitions()) {
       const posts = [];
 
-      for (const feed of edition.feeds) {
+      for (const feed of definition.feeds) {
         const latestPosts = await fetchLatestPosts(feed);
         posts.push(...latestPosts);
       }
 
-      await buildEditionTemplate(edition, posts);
+      await buildEdition(definition, posts);
     }
 
-    await syncEditionTemplates();
+    await syncEditions();
 
     callback(null, { message: "Successfully built editions" });
   } catch (error) {
@@ -28,9 +28,9 @@ module.exports.handler = async (event, context, callback) => {
   }
 };
 
-function loadEditions() {
+function loadEditionDefinitions() {
   try {
-    const editions = editionService.loadEditions();
+    const editions = editionService.loadDefinitions();
 
     if (!editions.length) {
       throw new Error("Expected editions to be defined");
@@ -57,7 +57,7 @@ async function fetchLatestPosts(feed) {
   return posts;
 }
 
-async function buildEditionTemplate(edition, posts) {
+async function buildEdition(edition, posts) {
   try {
     const html = templateService.buildTemplate("edition", {
       name: edition.name,
@@ -71,7 +71,7 @@ async function buildEditionTemplate(edition, posts) {
   }
 }
 
-async function syncEditionTemplates() {
+async function syncEditions() {
   try {
     await storageService.syncDistFiles();
   } catch (error) {
