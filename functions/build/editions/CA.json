@@ -1,0 +1,16 @@
+{
+  "key": "CA",
+  "name": "Canada",
+  "feeds": [
+    "https://www.cbc.ca/cmlink/rss-topstories",
+    "https://www.ctvnews.ca/rss/ctvnews-ca-top-stories-public-rss-1.822009",
+    "https://globalnews.ca/feed/",
+    "https://www.thestar.com/content/thestar/feed.RSSManagerServlet.topstories.full.rss",
+    "https://www.huffingtonpost.ca/feeds/index.xml",
+    "https://torontosun.com/feed/",
+    "https://feeds.feedburner.com/FP_TopStories",
+    "https://vancouversun.com/feed/?x=1",
+    "https://toronto.citynews.ca/feed/",
+    "https://montrealgazette.com/feed/"
+  ]
+}
