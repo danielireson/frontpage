@@ -1,5 +1,16 @@
 {
   "key": "INT",
   "name": "International",
-  "feeds": ["http://feeds.bbci.co.uk/news/world/rss.xml"]
+  "feeds": [
+    "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "https://www.independent.co.uk/news/world/rss",
+    "https://www.aljazeera.com/xml/rss/all.xml",
+    "https://yahoo.com/news/rss/world",
+    "https://www.cbsnews.com/latest/rss/world",
+    "https://www.theguardian.com/world/rss",
+    "https://www.cnbc.com/id/100727362/device/rss/rss.html",
+    "https://www.rt.com/rss/news/",
+    "https://www.npr.org/rss/rss.php?id=1004",
+    "https://abcnews.go.com/abcnews/internationalheadlines"
+  ]
 }
