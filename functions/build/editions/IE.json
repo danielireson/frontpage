@@ -1,0 +1,16 @@
+{
+  "key": "IE",
+  "name": "Ireland",
+  "feeds": [
+    "https://www.irishcentral.com/feeds/section-articles.atom",
+    "https://www.irishtimes.com/rss/activecampaign-business-today-digest-more-from-business-1.3180340",
+    "https://www.independent.ie/breaking-news/rss/",
+    "https://www.irishmirror.ie/?service=rss",
+    "https://feeds.breakingnews.ie/bntopstories?format=xml",
+    "https://www.thejournal.ie/feed/",
+    "https://www.rte.ie/feeds/rss/?index=/news/",
+    "https://www.thesun.ie/feed/",
+    "https://www.the42.ie/feed",
+    "https://irishtechnews.ie/feed"
+  ]
+}
