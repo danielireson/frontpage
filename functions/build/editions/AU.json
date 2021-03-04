@@ -1,0 +1,16 @@
+{
+  "key": "AU",
+  "name": "Australia",
+  "feeds": [
+    "https://www.abc.net.au/news/feed/2942460/rss.xml",
+    "https://www.9news.com.au/rss",
+    "https://www.dailytelegraph.com.au/feed",
+    "https://www.news.com.au/feed/",
+    "https://bestinau.com.au/feed/",
+    "https://www.crikey.com.au/feed/",
+    "https://www.sbs.com.au/news/rss/Section/Top+Stories",
+    "https://www.heraldsun.com.au/rss",
+    "https://www.huffingtonpost.com.au/rss/index.xml",
+    "https://www.canberratimes.com.au/rss.xml"
+  ]
+}
