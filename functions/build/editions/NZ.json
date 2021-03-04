@@ -1,0 +1,16 @@
+{
+  "key": "NZ",
+  "name": "New Zealand",
+  "feeds": [
+    "https://www.stuff.co.nz/rss",
+    "https://www.newsroom.co.nz/feed/rss",
+    "https://www.scoop.co.nz/storyindex/index.rss?s.c=GE",
+    "https://thespinoff.co.nz/feed/",
+    "https://www.times.co.nz/feed/",
+    "https://www.odt.co.nz/news/feed",
+    "https://stoppress.co.nz/feed/",
+    "https://www.theguardian.com/world/newzealand/rss",
+    "https://www.westpac.co.nz/rednews/rss",
+    "https://feeds.feedburner.com/geekzone"
+  ]
+}
