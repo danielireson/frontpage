@@ -22,7 +22,7 @@ module.exports.handler = async (event, context, callback) => {
 
     await syncEditions();
 
-    callback(null, { message: "Successfully built editions" });
+    callback(null, "Build succeeded");
   } catch (error) {
     callback(new Error("Build failed"));
   }

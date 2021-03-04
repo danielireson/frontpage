@@ -79,9 +79,7 @@ describe("build", function () {
     const callbackArgs = callback.firstCall.args;
 
     expect(callbackArgs[1], "response").to.exist;
-    expect(callbackArgs[1], "response").to.deep.equal({
-      message: "Successfully built editions",
-    });
+    expect(callbackArgs[1], "response").to.equal("Build succeeded");
 
     expect(loadDefinitionsStub.calledOnce).to.be.true;
 
@@ -156,9 +154,7 @@ describe("build", function () {
     const callbackArgs = callback.firstCall.args;
 
     expect(callbackArgs[1], "response").to.exist;
-    expect(callbackArgs[1], "response").to.deep.equal({
-      message: "Successfully built editions",
-    });
+    expect(callbackArgs[1], "response").to.equal("Build succeeded");
 
     expect(logInfoSpy.callCount, "logInfo").to.equal(1);
     expect(logErrorSpy.callCount, "logError").to.equal(0);
