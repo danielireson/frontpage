@@ -10,6 +10,7 @@
     "https://www.mirror.co.uk/?service=rss",
     "https://feeds.feedburner.com/daily-express-uk-news",
     "https://www.thesun.co.uk/feed/",
-    "https://www.dailymail.co.uk/home/index.rss"
+    "https://www.dailymail.co.uk/home/index.rss",
+    "http://www.huffingtonpost.co.uk/feeds/index.xml"
   ]
 }
