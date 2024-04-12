@@ -1,5 +1,5 @@
 {
-  "name": "frontpage.today",
+  "name": "frontpage",
   "version": "1.0.0",
   "description": "Daily news aggregator",
   "private": true,
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/danielireson/frontpage.today.git"
+    "url": "git+https://github.com/danielireson/frontpage.git"
   },
   "author": "Daniel Iresn",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/danielireson/frontpage.today/issues"
+    "url": "https://github.com/danielireson/frontpage/issues"
   },
-  "homepage": "https://github.com/danielireson/frontpage.today#readme",
+  "homepage": "https://github.com/danielireson/frontpage#readme",
   "devDependencies": {
     "chai": "^4.3.0",
     "mocha": "^8.2.1",
