@@ -13,17 +13,17 @@ if [ ! -f "config/$1.json" ]; then
 fi
 
 aws s3api create-bucket \
-  --bucket "frontpage-today-$1-deployments" \
+  --bucket "frontpage-$1-deployments" \
   --region us-east-1 \
   --acl private
 
 aws --region us-east-1 cloudformation package \
   --template template.yml \
   --output-template-file deploy-template.yml \
-  --s3-bucket "frontpage-today-$1-deployments"
+  --s3-bucket "frontpage-$1-deployments"
 
 aws --region us-east-1 cloudformation create-stack \
-  --stack-name "frontpage-today-$1" \
+  --stack-name "frontpage-$1" \
   --template-body file://deploy-template.yml \
   --parameters "file://config/$1.json" \
   --capabilities CAPABILITY_IAM \
