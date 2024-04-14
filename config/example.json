@@ -1,10 +1,10 @@
 [
   {
-    "ParameterKey": "HostedZone",
+    "ParameterKey": "S3BucketName",
     "ParameterValue": ""
   },
   {
-    "ParameterKey": "CertificateARN",
+    "ParameterKey": "AcmCertificateArn",
     "ParameterValue": ""
   }
 ]

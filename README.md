@@ -34,8 +34,6 @@ cp config/exmaple.json config/prod.json
 ./scripts/update-stack prod
 ```
 
-A Hosted Zone and SSL/TLS Certificate from AWS Certificate Manager will need to be manually set up. These need to be defined in the config file as `HostedZone` and `CertificateARN` prior to deploying the stack.
-
 ## License
 
 This project is licensed under the MIT License.

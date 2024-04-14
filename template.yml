@@ -2,28 +2,28 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
-  HostedZone:
+  S3BucketName:
     Type: String
-  CertificateARN:
+  AcmCertificateArn:
     Type: String
 
 Resources:
   DomainBucketRootPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref HostedZone
+      Bucket: !Ref S3BucketName
       PolicyDocument:
         Statement:
           - Action:
               - s3:GetObject
             Effect: Allow
             Resource:
-              - !Sub arn:aws:s3:::${HostedZone}/*
+              - !Sub arn:aws:s3:::${S3BucketName}/*
             Principal: "*"
   DomainBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref HostedZone
+      BucketName: !Ref S3BucketName
       WebsiteConfiguration:
         IndexDocument: INT.html
         ErrorDocument: INT.html
@@ -36,7 +36,7 @@ Resources:
               HTTPPort: 80
               HTTPSPort: 443
               OriginProtocolPolicy: http-only
-            DomainName: !Sub ${HostedZone}.s3-website-${AWS::Region}.amazonaws.com
+            DomainName: !Sub ${S3BucketName}.s3-website-${AWS::Region}.amazonaws.com
             Id: origin
         DefaultCacheBehavior:
           ForwardedValues:
@@ -49,9 +49,9 @@ Resources:
             - EventType: origin-request
               LambdaFunctionARN: !Ref VersionedLambdaRenderFunction
         Aliases:
-          - !Sub ${HostedZone}
+          - !Sub ${S3BucketName}
         ViewerCertificate:
-          AcmCertificateArn: !Ref CertificateARN
+          AcmCertificateArn: !Ref AcmCertificateArn
           SslSupportMethod: sni-only
         Enabled: true
   LambdaBuildRole:
@@ -78,7 +78,7 @@ Resources:
           - Effect: Allow
             Action:
               - s3:PutObject
-            Resource: !Sub arn:aws:s3:::${HostedZone}/*
+            Resource: !Sub arn:aws:s3:::${S3BucketName}/*
   LambdaBuildFunction:
     Type: AWS::Lambda::Function
     Properties:
@@ -91,7 +91,7 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          S3_BUCKET: !Ref HostedZone
+          S3_BUCKET: !Ref S3BucketName
   LambdaBuildEventPermission:
     Type: AWS::Lambda::Permission
     Properties:
