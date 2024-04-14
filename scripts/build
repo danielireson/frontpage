@@ -4,8 +4,16 @@ import { handler } from "../functions/build/index.js";
 
 const event = {};
 const context = {};
-const callback = () => {};
+const callback = (error) => {
+  if (error) {
+    console.error(`Build failed: ${error.message}`);
+    process.exit(1);
+  } else {
+    console.log("Build succeeded");
+    process.exit(0);
+  }
+};
 
-handler(event, context, callback).catch((error) => {
+await handler(event, context, callback).catch((error) => {
   console.error(error);
 });
