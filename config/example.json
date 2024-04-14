@@ -8,7 +8,7 @@
     "ParameterValue": ""
   },
   {
-    "ParameterKey": "AcmCertificateArn",
+    "ParameterKey": "AlternativeDomainNameCertificate",
     "ParameterValue": ""
   }
 ]

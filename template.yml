@@ -6,7 +6,7 @@ Parameters:
     Type: String
   AlternativeDomainName:
     Type: String
-  AcmCertificateArn:
+  AlternativeDomainNameCertificate:
     Type: String
 
 Resources:
@@ -53,7 +53,7 @@ Resources:
         Aliases:
           - !Sub ${AlternativeDomainName}
         ViewerCertificate:
-          AcmCertificateArn: !Ref AcmCertificateArn
+          AlternativeDomainNameCertificate: !Ref AlternativeDomainNameCertificate
           SslSupportMethod: sni-only
         Enabled: true
   LambdaBuildRole:
