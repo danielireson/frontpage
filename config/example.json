@@ -4,6 +4,10 @@
     "ParameterValue": ""
   },
   {
+    "ParameterKey": "S3AlternativeDomainName",
+    "ParameterValue": ""
+  },
+  {
     "ParameterKey": "AcmCertificateArn",
     "ParameterValue": ""
   }

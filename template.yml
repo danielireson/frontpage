@@ -4,6 +4,8 @@ AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   S3BucketName:
     Type: String
+  S3AlternativeDomainName:
+    Type: String
   AcmCertificateArn:
     Type: String
 
@@ -49,7 +51,7 @@ Resources:
             - EventType: origin-request
               LambdaFunctionARN: !Ref VersionedLambdaRenderFunction
         Aliases:
-          - !Sub ${S3BucketName}
+          - !Sub ${S3AlternativeDomainName}
         ViewerCertificate:
           AcmCertificateArn: !Ref AcmCertificateArn
           SslSupportMethod: sni-only
