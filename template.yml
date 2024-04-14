@@ -54,15 +54,6 @@ Resources:
           AcmCertificateArn: !Ref CertificateARN
           SslSupportMethod: sni-only
         Enabled: true
-  DomainBucketDistributionRecordSet:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneName: !Sub ${HostedZone}.
-      Name: !Sub ${HostedZone}.
-      Type: A
-      AliasTarget:
-        DNSName: !GetAtt DomainBucketDistribution.DomainName
-        HostedZoneId: Z2FDTNDATAQYW2
   DomainBucketWWW:
     Type: AWS::S3::Bucket
     Properties:
@@ -95,15 +86,6 @@ Resources:
           AcmCertificateArn: !Ref CertificateARN
           SslSupportMethod: sni-only
         Enabled: true
-  DomainBucketDistributionWWWRecordSet:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneName: !Sub ${HostedZone}.
-      Name: !Sub www.${HostedZone}.
-      Type: A
-      AliasTarget:
-        DNSName: !GetAtt DomainBucketWWWDistribution.DomainName
-        HostedZoneId: Z2FDTNDATAQYW2
   LambdaBuildRole:
     Type: AWS::IAM::Role
     Properties:
