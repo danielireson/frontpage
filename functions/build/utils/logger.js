@@ -1,13 +1,16 @@
-"use strict";
-
-module.exports.logInfo = (data) => {
+export const logInfo = (data) => {
   if (process.env.NODE_ENV !== "test") {
     console.info(data);
   }
 };
 
-module.exports.logError = (data) => {
+export const logError = (data) => {
   if (process.env.NODE_ENV !== "test") {
     console.error(data);
   }
+};
+
+export default {
+  logInfo,
+  logError,
 };

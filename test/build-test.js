@@ -1,11 +1,11 @@
-const { expect } = require("chai");
-const sinon = require("sinon");
-const { handler } = require("../functions/build");
-const logger = require("../functions/build/utils/logger");
-const editionService = require("../functions/build/services/edition");
-const rssService = require("../functions/build/services/rss");
-const storageService = require("../functions/build/services/storage");
-const templateService = require("../functions/build/services/template");
+import { expect } from "chai";
+import sinon from "sinon";
+import { handler } from "../functions/build/index.js";
+import logger from "../functions/build/utils/logger.js";
+import editionService from "../functions/build/services/edition.js";
+import rssService from "../functions/build/services/rss.js";
+import storageService from "../functions/build/services/storage.js";
+import templateService from "../functions/build/services/template.js";
 
 describe("build", function () {
   let loadDefinitionsStub;

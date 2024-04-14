@@ -1,20 +1,20 @@
-"use strict";
-
-const path = require("path");
-const fs = require("fs");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+import path from "path";
+import fs from "fs";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 const s3 = new S3Client();
+
+const __dirname = import.meta.dirname;
 
 const STORAGE_DIR =
   process.env.NODE_ENV === "production"
     ? "/tmp"
     : path.resolve(__dirname, "../dist");
 
-module.exports.writeDistFile = (fileName, data) => {
+export const writeDistFile = (fileName, data) => {
   fs.writeFileSync(path.resolve(STORAGE_DIR, `${fileName}.html`), data);
 };
 
-module.exports.syncDistFiles = async (bucketName) => {
+export const syncDistFiles = async (bucketName) => {
   if (process.env.NODE_ENV === "production") {
     const fileNames = fs
       .readdirSync(STORAGE_DIR)
@@ -31,4 +31,9 @@ module.exports.syncDistFiles = async (bucketName) => {
       await s3.send(command);
     }
   }
+};
+
+export default {
+  writeDistFile,
+  syncDistFiles,
 };

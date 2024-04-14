@@ -1,6 +1,6 @@
-const { expect } = require("chai");
-const sinon = require("sinon");
-const { handler } = require("../functions/render");
+import { expect } from "chai";
+import sinon from "sinon";
+import { handler } from "../functions/render/index.js";
 
 describe("render", function () {
   afterEach(function () {

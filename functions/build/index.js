@@ -1,13 +1,11 @@
-"use strict";
+import logger from "./utils/logger.js";
+import editionService from "./services/edition.js";
+import rssService from "./services/rss.js";
+import postService from "./services/post.js";
+import templateService from "./services/template.js";
+import storageService from "./services/storage.js";
 
-const logger = require("./utils/logger");
-const editionService = require("./services/edition");
-const rssService = require("./services/rss");
-const postService = require("./services/post");
-const templateService = require("./services/template");
-const storageService = require("./services/storage");
-
-module.exports.handler = async (event, context, callback) => {
+export const handler = async (event, context, callback) => {
   try {
     for (const definition of loadEditionDefinitions()) {
       const posts = [];

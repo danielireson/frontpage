@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-const build = require("../functions/build");
+import { handler } from "../functions/build/index.js";
 
 const event = {};
 const context = {};
 const callback = () => {};
 
-build.handler(event, context, callback).catch((error) => {
+handler(event, context, callback).catch((error) => {
   console.error(error);
 });

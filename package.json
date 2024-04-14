@@ -2,6 +2,7 @@
   "name": "frontpage",
   "version": "1.0.0",
   "description": "Daily news aggregator",
+  "type": "module",
   "private": true,
   "scripts": {
     "build": "NODE_ENV=development ./scripts/build",
