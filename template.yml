@@ -54,38 +54,6 @@ Resources:
           AcmCertificateArn: !Ref CertificateARN
           SslSupportMethod: sni-only
         Enabled: true
-  DomainBucketWWW:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub www.${HostedZone}
-      WebsiteConfiguration:
-        RedirectAllRequestsTo:
-          HostName: !Sub ${HostedZone}
-          Protocol: https
-  DomainBucketWWWDistribution:
-    Type: AWS::CloudFront::Distribution
-    Properties:
-      DistributionConfig:
-        Origins:
-          - CustomOriginConfig:
-              HTTPPort: 80
-              HTTPSPort: 443
-              OriginProtocolPolicy: http-only
-            DomainName: !Sub www.${HostedZone}.s3-website-${AWS::Region}.amazonaws.com
-            Id: origin
-        DefaultCacheBehavior:
-          ForwardedValues:
-            QueryString: false
-            Headers:
-              - CloudFront-Viewer-Country
-          TargetOriginId: origin
-          ViewerProtocolPolicy: redirect-to-https
-        Aliases:
-          - !Sub www.${HostedZone}
-        ViewerCertificate:
-          AcmCertificateArn: !Ref CertificateARN
-          SslSupportMethod: sni-only
-        Enabled: true
   LambdaBuildRole:
     Type: AWS::IAM::Role
     Properties:
