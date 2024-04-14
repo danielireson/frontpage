@@ -138,6 +138,3 @@ Outputs:
   DistributionURL:
     Description: The cloudfront distribution URL
     Value: !GetAtt DomainBucketDistribution.DomainName
-  ApplicationURL:
-    Description: The public application URL
-    Value: !Ref HostedZone
