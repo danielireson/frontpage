@@ -55,7 +55,7 @@ Resources:
         Aliases:
           - !Sub ${AlternativeDomainName}
         ViewerCertificate:
-          AlternativeDomainNameCertificate: !Ref AlternativeDomainNameCertificate
+          AcmCertificateArn: !Ref AlternativeDomainNameCertificate
           SslSupportMethod: sni-only
         Enabled: true
   LambdaBuildRole:
