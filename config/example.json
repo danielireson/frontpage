@@ -1,10 +1,10 @@
 [
   {
-    "ParameterKey": "S3BucketName",
+    "ParameterKey": "BucketName",
     "ParameterValue": ""
   },
   {
-    "ParameterKey": "S3AlternativeDomainName",
+    "ParameterKey": "AlternativeDomainName",
     "ParameterValue": ""
   },
   {

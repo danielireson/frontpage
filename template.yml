@@ -2,9 +2,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
-  S3BucketName:
+  BucketName:
     Type: String
-  S3AlternativeDomainName:
+  AlternativeDomainName:
     Type: String
   AcmCertificateArn:
     Type: String
@@ -13,19 +13,19 @@ Resources:
   DomainBucketRootPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref S3BucketName
+      Bucket: !Ref BucketName
       PolicyDocument:
         Statement:
           - Action:
               - s3:GetObject
             Effect: Allow
             Resource:
-              - !Sub arn:aws:s3:::${S3BucketName}/*
+              - !Sub arn:aws:s3:::${BucketName}/*
             Principal: "*"
   DomainBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref S3BucketName
+      BucketName: !Ref BucketName
       WebsiteConfiguration:
         IndexDocument: INT.html
         ErrorDocument: INT.html
@@ -38,7 +38,7 @@ Resources:
               HTTPPort: 80
               HTTPSPort: 443
               OriginProtocolPolicy: http-only
-            DomainName: !Sub ${S3BucketName}.s3-website-${AWS::Region}.amazonaws.com
+            DomainName: !Sub ${BucketName}.s3-website-${AWS::Region}.amazonaws.com
             Id: origin
         DefaultCacheBehavior:
           ForwardedValues:
@@ -51,7 +51,7 @@ Resources:
             - EventType: origin-request
               LambdaFunctionARN: !Ref VersionedLambdaRenderFunction
         Aliases:
-          - !Sub ${S3AlternativeDomainName}
+          - !Sub ${AlternativeDomainName}
         ViewerCertificate:
           AcmCertificateArn: !Ref AcmCertificateArn
           SslSupportMethod: sni-only
@@ -80,7 +80,7 @@ Resources:
           - Effect: Allow
             Action:
               - s3:PutObject
-            Resource: !Sub arn:aws:s3:::${S3BucketName}/*
+            Resource: !Sub arn:aws:s3:::${BucketName}/*
   LambdaBuildFunction:
     Type: AWS::Lambda::Function
     Properties:
@@ -93,7 +93,7 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          S3_BUCKET: !Ref S3BucketName
+          S3_BUCKET: !Ref BucketName
   LambdaBuildEventPermission:
     Type: AWS::Lambda::Permission
     Properties:
