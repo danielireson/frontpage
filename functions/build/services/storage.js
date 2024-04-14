@@ -11,6 +11,7 @@ const STORAGE_DIR =
     : path.resolve(__dirname, "../dist");
 
 export const writeDistFile = (fileName, data) => {
+  fs.mkdirSync(STORAGE_DIR, { recursive: true });
   fs.writeFileSync(path.resolve(STORAGE_DIR, `${fileName}.html`), data);
 };
 
