@@ -29,6 +29,8 @@ Resources:
       WebsiteConfiguration:
         IndexDocument: INT.html
         ErrorDocument: INT.html
+      PublicAccessBlockConfiguration:
+        BlockPublicPolicy: false
   DomainBucketDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
